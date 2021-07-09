@@ -1,20 +1,20 @@
 // SPDX-License-Identifier: Unlicensed
 
 /**
+ * @@@@@@    @@@@@@@  @@@@ @@@@   @@@@     @@@@   @@@@@   @@@@@@  @@@@@@@ @@@    @@
+ * @@@@@@@@  @@@@@@@@ @@@@@@@@@  @@@@@@   @@@@@@  @@@@@@  @@@@@@@ @@@@@@  @@ @@  @@
+ * @@    @@@ @@       @@ @@@ @@ @@    @@ @@       @@   @@ @@      @@      @@ @@  @@
+ * @@     @@ @@@@@@   @@  @  @@ @@    @@ @@  @@@@ @@@@@@  @@@@@@  @@@@@   @@  @@ @@
+ * @@     @@ @@@@@    @@     @@ @@    @@ @@  @@@@ @@@@@   @@@@@   @@@@@@  @@  @@ @@
+ * @@    @@@ @@       @@     @@ @@    @@ @@    @@ @@ @@   @@      @@      @@  @@ @@
+ * @@@@@@@@  @@@@@@@@ @@     @@  @@@@@@   @@@@@@  @@  @@  @@@@@@@ @@@@@@  @@  @@ @@
+ * @@@@@@    @@@@@@@  @@     @@   @@@@     @@@@   @@  @@@ @@@@@@  @@@@@@@ @@    @@@
  *
- *
- *
- *
- *
- *
- *
- *
- *
- * Test Demo Token for R&D firm
+ * Demo Green Token for R&D firm
  * - Total Supply
  *      1 quadrillion Tokens
  * - Token name & symbol
- *      DemoGreen, "DEMOG"
+ *      DemoGreen, "DMG"
  *
  * - Great Tokenomics
  *      5% of each transaction will be distributed to all token holders
