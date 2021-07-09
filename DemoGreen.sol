@@ -473,10 +473,10 @@ contract DemoGreen is Context, IERC20, Ownable {
     uint256 public _taxFee = 5;
     uint256 private _previousTaxFee = _taxFee;
 
-    uint256 public _liquidityFee = 10;
-    uint256 private _previousLiquidityFee = _liquidityFee;
+    uint256 public _swapFee = 10;
+    uint256 private _previousSwapFee = _swapFee;
 
-    uint256 public marketingDivisor = 5;
+    uint256 public greenAndCleanEnvironmentRewardDivisor = 5;
 
     uint256 public _maxTxAmount = 3 * 10**12 * 10**9;
     uint256 private minimumTokensBeforeSwap = 2 * 10**11 * 10**9;
@@ -725,7 +725,7 @@ contract DemoGreen is Context, IERC20, Ownable {
         uint256 transferredBalance = address(this).balance.sub(initialBalance);
 
         //Send to Marketing address
-        transferToAddressETH(rewardAddress, transferredBalance.div(_liquidityFee).mul(marketingDivisor));
+        transferToAddressETH(rewardAddress, transferredBalance.div(_swapFee).mul(greenAndCleanEnvironmentRewardDivisor));
     }
 
 
@@ -812,44 +812,44 @@ contract DemoGreen is Context, IERC20, Ownable {
 
     function _transferStandard(address sender, address recipient, uint256 tAmount) private {
 
-        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 tLiquidity) = _getValues(tAmount);
+        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 tSwap) = _getValues(tAmount);
         _rOwned[sender] = _rOwned[sender].sub(rAmount);
         _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);
-        _takeLiquidity(tLiquidity);
+        _takeSwap(tSwap);
         _reflectFee(rFee, tFee);
         emit Transfer(sender, recipient, tTransferAmount);
     }
 
     function _transferToExcluded(address sender, address recipient, uint256 tAmount) private {
 
-        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 tLiquidity) = _getValues(tAmount);
+        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 tSwap) = _getValues(tAmount);
 	    _rOwned[sender] = _rOwned[sender].sub(rAmount);
         _tOwned[recipient] = _tOwned[recipient].add(tTransferAmount);
         _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);
-        _takeLiquidity(tLiquidity);
+        _takeSwap(tSwap);
         _reflectFee(rFee, tFee);
         emit Transfer(sender, recipient, tTransferAmount);
     }
 
     function _transferFromExcluded(address sender, address recipient, uint256 tAmount) private {
 
-        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 tLiquidity) = _getValues(tAmount);
+        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 tSwap) = _getValues(tAmount);
     	_tOwned[sender] = _tOwned[sender].sub(tAmount);
         _rOwned[sender] = _rOwned[sender].sub(rAmount);
         _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);
-        _takeLiquidity(tLiquidity);
+        _takeSwap(tSwap);
         _reflectFee(rFee, tFee);
         emit Transfer(sender, recipient, tTransferAmount);
     }
 
     function _transferBothExcluded(address sender, address recipient, uint256 tAmount) private {
 
-        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 tLiquidity) = _getValues(tAmount);
+        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 tSwap) = _getValues(tAmount);
     	_tOwned[sender] = _tOwned[sender].sub(tAmount);
         _rOwned[sender] = _rOwned[sender].sub(rAmount);
         _tOwned[recipient] = _tOwned[recipient].add(tTransferAmount);
         _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);
-        _takeLiquidity(tLiquidity);
+        _takeSwap(tSwap);
         _reflectFee(rFee, tFee);
         emit Transfer(sender, recipient, tTransferAmount);
     }
@@ -862,25 +862,25 @@ contract DemoGreen is Context, IERC20, Ownable {
 
     function _getValues(uint256 tAmount) private view returns (uint256, uint256, uint256, uint256, uint256, uint256) {
 
-        (uint256 tTransferAmount, uint256 tFee, uint256 tLiquidity) = _getTValues(tAmount);
-        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee) = _getRValues(tAmount, tFee, tLiquidity, _getRate());
-        return (rAmount, rTransferAmount, rFee, tTransferAmount, tFee, tLiquidity);
+        (uint256 tTransferAmount, uint256 tFee, uint256 tSwap) = _getTValues(tAmount);
+        (uint256 rAmount, uint256 rTransferAmount, uint256 rFee) = _getRValues(tAmount, tFee, tSwap, _getRate());
+        return (rAmount, rTransferAmount, rFee, tTransferAmount, tFee, tSwap);
     }
 
     function _getTValues(uint256 tAmount) private view returns (uint256, uint256, uint256) {
 
         uint256 tFee = calculateTaxFee(tAmount);
-        uint256 tLiquidity = calculateLiquidityFee(tAmount);
-        uint256 tTransferAmount = tAmount.sub(tFee).sub(tLiquidity);
-        return (tTransferAmount, tFee, tLiquidity);
+        uint256 tSwap = calculateSwapFee(tAmount);
+        uint256 tTransferAmount = tAmount.sub(tFee).sub(tSwap);
+        return (tTransferAmount, tFee, tSwap);
     }
 
-    function _getRValues(uint256 tAmount, uint256 tFee, uint256 tLiquidity, uint256 currentRate) private pure returns (uint256, uint256, uint256) {
+    function _getRValues(uint256 tAmount, uint256 tFee, uint256 tSwap, uint256 currentRate) private pure returns (uint256, uint256, uint256) {
 
         uint256 rAmount = tAmount.mul(currentRate);
         uint256 rFee = tFee.mul(currentRate);
-        uint256 rLiquidity = tLiquidity.mul(currentRate);
-        uint256 rTransferAmount = rAmount.sub(rFee).sub(rLiquidity);
+        uint256 rSwap = tSwap.mul(currentRate);
+        uint256 rTransferAmount = rAmount.sub(rFee).sub(rSwap);
         return (rAmount, rTransferAmount, rFee);
     }
 
@@ -903,13 +903,13 @@ contract DemoGreen is Context, IERC20, Ownable {
         return (rSupply, tSupply);
     }
 
-    function _takeLiquidity(uint256 tLiquidity) private {
+    function _takeSwap(uint256 tSwap) private {
 
         uint256 currentRate =  _getRate();
-        uint256 rLiquidity = tLiquidity.mul(currentRate);
-        _rOwned[address(this)] = _rOwned[address(this)].add(rLiquidity);
+        uint256 rSwap = tSwap.mul(currentRate);
+        _rOwned[address(this)] = _rOwned[address(this)].add(rSwap);
         if(_isExcluded[address(this)])
-            _tOwned[address(this)] = _tOwned[address(this)].add(tLiquidity);
+            _tOwned[address(this)] = _tOwned[address(this)].add(tSwap);
     }
 
     function calculateTaxFee(uint256 _amount) private view returns (uint256) {
@@ -917,26 +917,26 @@ contract DemoGreen is Context, IERC20, Ownable {
         return _amount.mul(_taxFee).div(10**2);
     }
 
-    function calculateLiquidityFee(uint256 _amount) private view returns (uint256) {
+    function calculateSwapFee(uint256 _amount) private view returns (uint256) {
 
-        return _amount.mul(_liquidityFee).div(10**2);
+        return _amount.mul(_swapFee).div(10**2);
     }
 
     function removeAllFee() private {
 
-        if(_taxFee == 0 && _liquidityFee == 0) return;
+        if(_taxFee == 0 && _swapFee == 0) return;
 
         _previousTaxFee = _taxFee;
-        _previousLiquidityFee = _liquidityFee;
+        _previousSwapFee = _swapFee;
 
         _taxFee = 0;
-        _liquidityFee = 0;
+        _swapFee = 0;
     }
 
     function restoreAllFee() private {
 
         _taxFee = _previousTaxFee;
-        _liquidityFee = _previousLiquidityFee;
+        _swapFee = _previousSwapFee;
     }
 
     function isExcludedFromFee(address account) public view returns(bool) {
@@ -959,9 +959,9 @@ contract DemoGreen is Context, IERC20, Ownable {
         _taxFee = taxFee;
     }
 
-    function setLiquidityFeePercent(uint256 liquidityFee) external onlyOwner() {
+    function setSwapFeePercent(uint256 swapFee) external onlyOwner() {
 
-        _liquidityFee = liquidityFee;
+        _swapFee = swapFee;
     }
 
     function setMaxTxAmount(uint256 maxTxAmount) external onlyOwner() {
@@ -969,9 +969,9 @@ contract DemoGreen is Context, IERC20, Ownable {
         _maxTxAmount = maxTxAmount;
     }
 
-    function setMarketingDivisor(uint256 divisor) external onlyOwner() {
+    function setGreenAndCleanEnvironmentRewardDivisor(uint256 divisor) external onlyOwner() {
 
-        marketingDivisor = divisor;
+        greenAndCleanEnvironmentRewardDivisor = divisor;
     }
 
     function setNumTokensSellToAddToLiquidity(uint256 _minimumTokensBeforeSwap) external onlyOwner() {
@@ -1005,7 +1005,7 @@ contract DemoGreen is Context, IERC20, Ownable {
 
         setSwapAndLiquifyEnabled(false);
         _taxFee = 0;
-        _liquidityFee = 0;
+        _swapFee = 0;
         _maxTxAmount = 1 * 10**15 * 10**9;
     }
 
@@ -1013,7 +1013,7 @@ contract DemoGreen is Context, IERC20, Ownable {
 
         setSwapAndLiquifyEnabled(true);
         _taxFee = 5;
-        _liquidityFee = 10;
+        _swapFee = 10;
         _maxTxAmount = 3 * 10**12 * 10**9;
     }
 
