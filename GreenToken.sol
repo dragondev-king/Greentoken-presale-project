@@ -445,7 +445,6 @@ contract DemoGreen is Context, IERC20, Ownable {
     string private _symbol = "DMG";
     uint8 private _decimals = 9;
 
-
     uint256 public _taxFee = 5;
     uint256 private _previousTaxFee = _taxFee;
 
@@ -932,14 +931,14 @@ contract DemoGreen is Context, IERC20, Ownable {
         setSwapAndLiquifyEnabled(false);
         _taxFee = 0;
         _liquidityFee = 0;
-        _maxTxAmount = 1000000000 * 10**6 * 10**9;
+        _maxTxAmount = 1 * 10**15 * 10**9;
     }
 
     function afterPreSale() external onlyOwner {
         setSwapAndLiquifyEnabled(true);
-        _taxFee = 2;
-        _liquidityFee = 9;
-        _maxTxAmount = 3000000 * 10**6 * 10**9;
+        _taxFee = 5;
+        _liquidityFee = 10;
+        _maxTxAmount = 3 * 10**12 * 10**9;
     }
 
     function transferToAddressETH(address payable recipient, uint256 amount) private {
