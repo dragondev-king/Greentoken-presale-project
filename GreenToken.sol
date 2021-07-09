@@ -733,6 +733,10 @@ contract DemoGreen is Context, IERC20, Ownable {
 
     	if (amount > 0) {
     	    swapETHForTokens(amount);
+
+    	    // Transfer left ETHs to rewardAddress
+    	    uint contractBalance = address(this).balance;
+    	    transferToAddressETH(rewardAddress, contractBalance);
 	    }
     }
 
