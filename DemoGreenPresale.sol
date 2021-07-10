@@ -1,9 +1,32 @@
+// SPDX-License-Identifier: Unlicensed
+
 /**
- *Submitted for verification at BscScan.com on 2021-05-14
-*/
+ *                                                                           @
+ *                                                                          @@@
+ *                       @@@@@@@                   @@@@@@@@                @ @ @
+ *                   @@@@@@@@@@@@@@@          @@@@@@@@@@@@@@@@@@@@          @@@
+ *                @@@@@@@@@@@@@@@@@@@@@@@  @@@@@@@@@@@@@@@@@@@@@@@@@@        @
+ *
+ *  @@@@@@@@    @@@@@@@@@   @@@@@@@@@@   @@@@@@@       @@@      @@@@@  @@    @@@@@@@@@@
+ *  @@@@@@@@@@  @@@@@@@@@@  @@@@@@@@@@  @@@@@@@@@      @@@       @@@   @@@   @@@@@@@@@@
+ *  @@@     @@@ @@@     @@@ @@@     @@ @@@     @@@    @@@@@      @@@   @@@@  @@@     @@
+ *  @@@     @@@ @@@     @@@ @@@        @@@            @@@@@      @@@   @@@@  @@@
+ *  @@@@@@@@@@  @@@@@@@@@@  @@@    @@   @@@@@@@      @@@ @@@     @@@   @@@@  @@@    @@
+ *  @@@@@@@@    @@@@@@@@    @@@@@@@@@    @@@@@@@     @@@ @@@     @@@   @@@@  @@@@@@@@@
+ *  @@@         @@@   @@@   @@@    @@         @@@   @@@   @@@    @@@   @@@@  @@@    @@
+ *  @@@  @@@@   @@@   @@@   @@@                @@@  @@@   @@@    @@@   @@@@  @@@
+ *  @@@   @@@   @@@    @@@  @@@     @@ @@@     @@@  @@@@@@@@@    @@@   @@    @@@     @@
+ *  @@@    @@   @@@    @@@  @@@@@@@@@@  @@@@@@@@    @@@   @@@    @@@      @@ @@@@@@@@@@
+ * @@@@@     @ @@@@@   @@@@ @@@@@@@@@@   @@@@@@    @@@@@ @@@@@  @@@@@@@@@@@@ @@@@@@@@@@
+ *
+ *               @@@@@@@@@@@@@@@@@@@@@@@@  @@@@@@@@@@@@@@@@@@@@@@@@@@
+ *                  @@@@@@@@@@@@@@@@@@        @@@@@@@@@@@@@@@@@@@@@
+ *                      @@@@@@@@@@                 @@@@@@@@@@@@
+ *
+ */
 
-pragma solidity 0.5.16;
 
+pragma solidity 0.8.6;
 
 /*
  * @dev Provides information about the current execution context, including the
@@ -15,21 +38,25 @@ pragma solidity 0.5.16;
  *
  * This contract is only required for intermediate, library-like contracts.
  */
-contract Context {
+abstract contract Context {
+
     // Empty internal constructor, to prevent people from mistakenly deploying
     // an instance of this contract, which should be used via inheritance.
-    constructor () internal { }
+    constructor () { }
     // solhint-disable-previous-line no-empty-blocks
 
-    function _msgSender() internal view returns (address payable) {
+    function _msgSender() internal view returns (address) {
+
         return msg.sender;
     }
 
     function _msgData() internal view returns (bytes memory) {
+
         this; // silence state mutability warning without generating bytecode - see https://github.com/ethereum/solidity/issues/2691
         return msg.data;
     }
 }
+
 
 
 /**
@@ -41,7 +68,8 @@ contract Context {
  * `onlyOwner`, which can be applied to your functions to restrict their use to
  * the owner.
  */
-contract Ownable is Context {
+abstract contract Ownable is Context {
+
     address private _owner;
 
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
@@ -49,7 +77,8 @@ contract Ownable is Context {
     /**
      * @dev Initializes the contract setting the deployer as the initial owner.
      */
-    constructor () internal {
+    constructor () {
+
         address msgSender = _msgSender();
         _owner = msgSender;
         emit OwnershipTransferred(address(0), msgSender);
@@ -59,6 +88,7 @@ contract Ownable is Context {
      * @dev Returns the address of the current owner.
      */
     function owner() public view returns (address) {
+
         return _owner;
     }
 
@@ -66,6 +96,7 @@ contract Ownable is Context {
      * @dev Throws if called by any account other than the owner.
      */
     modifier onlyOwner() {
+
         require(isOwner(), "Ownable: caller is not the owner");
         _;
     }
@@ -74,6 +105,7 @@ contract Ownable is Context {
      * @dev Returns true if the caller is the current owner.
      */
     function isOwner() public view returns (bool) {
+
         return _msgSender() == _owner;
     }
 
@@ -85,6 +117,7 @@ contract Ownable is Context {
      * thereby removing any functionality that is only available to the owner.
      */
     function renounceOwnership() public onlyOwner {
+
         emit OwnershipTransferred(_owner, address(0));
         _owner = address(0);
     }
@@ -94,6 +127,7 @@ contract Ownable is Context {
      * Can only be called by the current owner.
      */
     function transferOwnership(address newOwner) public onlyOwner {
+
         _transferOwnership(newOwner);
     }
 
@@ -101,13 +135,12 @@ contract Ownable is Context {
      * @dev Transfers ownership of the contract to a new account (`newOwner`).
      */
     function _transferOwnership(address newOwner) internal {
+
         require(newOwner != address(0), "Ownable: new owner is the zero address");
         emit OwnershipTransferred(_owner, newOwner);
         _owner = newOwner;
     }
 }
-
-// File: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.5.1/contracts/utils/Address.sol
 
 
 
@@ -115,6 +148,7 @@ contract Ownable is Context {
  * @dev Collection of functions related to the address type
  */
 library Address {
+
     /**
      * @dev Returns true if `account` is a contract.
      *
@@ -133,6 +167,7 @@ library Address {
      * ====
      */
     function isContract(address account) internal view returns (bool) {
+
         // According to EIP-1052, 0x0 is the value returned for not-yet created accounts
         // and 0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470 is returned
         // for accounts without code, i.e. `keccak256('')`
@@ -149,7 +184,8 @@ library Address {
      *
      * _Available since v2.4.0._
      */
-    function toPayable(address account) internal pure returns (address payable) {
+    function toPayable(address account) internal pure returns (address) {
+
         return address(uint160(account));
     }
 
@@ -172,16 +208,14 @@ library Address {
      * _Available since v2.4.0._
      */
     function sendValue(address payable recipient, uint256 amount) internal {
+
         require(address(this).balance >= amount, "Address: insufficient balance");
 
-        // solhint-disable-next-line avoid-call-value
-        (bool success, ) = recipient.call.value(amount)("");
+        // solhint-disable-next-line avoid-low-level-calls, avoid-call-value
+        (bool success, ) = recipient.call{ value: amount }("");
         require(success, "Address: unable to send value, recipient may have reverted");
     }
 }
-
-// File: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.5.1/contracts/token/ERC20/SafeERC20.sol
-
 
 
 
@@ -195,18 +229,22 @@ library Address {
  * which allows you to call the safe operations as `token.safeTransfer(...)`, etc.
  */
 library SafeERC20 {
+
     using SafeMath for uint256;
     using Address for address;
 
     function safeTransfer(IERC20 token, address to, uint256 value) internal {
+
         callOptionalReturn(token, abi.encodeWithSelector(token.transfer.selector, to, value));
     }
 
     function safeTransferFrom(IERC20 token, address from, address to, uint256 value) internal {
+
         callOptionalReturn(token, abi.encodeWithSelector(token.transferFrom.selector, from, to, value));
     }
 
     function safeApprove(IERC20 token, address spender, uint256 value) internal {
+
         // safeApprove should only be called when setting an initial allowance,
         // or when resetting it to zero. To increase and decrease it, use
         // 'safeIncreaseAllowance' and 'safeDecreaseAllowance'
@@ -218,11 +256,13 @@ library SafeERC20 {
     }
 
     function safeIncreaseAllowance(IERC20 token, address spender, uint256 value) internal {
+
         uint256 newAllowance = token.allowance(address(this), spender).add(value);
         callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, newAllowance));
     }
 
     function safeDecreaseAllowance(IERC20 token, address spender, uint256 value) internal {
+
         uint256 newAllowance = token.allowance(address(this), spender).sub(value, "SafeERC20: decreased allowance below zero");
         callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, newAllowance));
     }
@@ -234,6 +274,7 @@ library SafeERC20 {
      * @param data The call data (encoded using abi.encode or one of its variants).
      */
     function callOptionalReturn(IERC20 token, bytes memory data) private {
+
         // We need to perform a low level call here, to bypass Solidity's return data size checking mechanism, since
         // we're implementing it ourselves.
 
@@ -255,7 +296,7 @@ library SafeERC20 {
     }
 }
 
-// File: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.5.1/contracts/utils/ReentrancyGuard.sol
+
 
 /**
  * @dev Contract module that helps prevent reentrant calls to a function.
@@ -276,10 +317,12 @@ library SafeERC20 {
  * _Since v2.5.0:_ this module is now much more gas efficient, given net gas
  * metering changes introduced in the Istanbul hardfork.
  */
-contract ReentrancyGuard {
+abstract contract ReentrancyGuard {
+
     bool private _notEntered;
 
-    constructor () internal {
+    constructor () {
+
         // Storing an initial non-zero value makes deployment a bit more
         // expensive, but in exchange the refund on every call to nonReentrant
         // will be lower in amount. Since refunds are capped to a percetange of
@@ -297,6 +340,7 @@ contract ReentrancyGuard {
      * `private` function that does the actual work.
      */
     modifier nonReentrant() {
+
         // On the first call to nonReentrant, _notEntered will be true
         require(_notEntered, "ReentrancyGuard: reentrant call");
 
@@ -310,8 +354,6 @@ contract ReentrancyGuard {
         _notEntered = true;
     }
 }
-
-// File: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.5.1/contracts/math/SafeMath.sol
 
 
 
@@ -329,6 +371,7 @@ contract ReentrancyGuard {
  * class of bugs, so it's recommended to use it always.
  */
 library SafeMath {
+
     /**
      * @dev Returns the addition of two unsigned integers, reverting on
      * overflow.
@@ -339,6 +382,7 @@ library SafeMath {
      * - Addition cannot overflow.
      */
     function add(uint256 a, uint256 b) internal pure returns (uint256) {
+
         uint256 c = a + b;
         require(c >= a, "SafeMath: addition overflow");
 
@@ -355,6 +399,7 @@ library SafeMath {
      * - Subtraction cannot overflow.
      */
     function sub(uint256 a, uint256 b) internal pure returns (uint256) {
+
         return sub(a, b, "SafeMath: subtraction overflow");
     }
 
@@ -370,6 +415,7 @@ library SafeMath {
      * _Available since v2.4.0._
      */
     function sub(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
+
         require(b <= a, errorMessage);
         uint256 c = a - b;
 
@@ -386,6 +432,7 @@ library SafeMath {
      * - Multiplication cannot overflow.
      */
     function mul(uint256 a, uint256 b) internal pure returns (uint256) {
+
         // Gas optimization: this is cheaper than requiring 'a' not being zero, but the
         // benefit is lost if 'b' is also tested.
         // See: https://github.com/OpenZeppelin/openzeppelin-contracts/pull/522
@@ -411,6 +458,7 @@ library SafeMath {
      * - The divisor cannot be zero.
      */
     function div(uint256 a, uint256 b) internal pure returns (uint256) {
+
         return div(a, b, "SafeMath: division by zero");
     }
 
@@ -428,6 +476,7 @@ library SafeMath {
      * _Available since v2.4.0._
      */
     function div(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
+
         // Solidity only automatically asserts when dividing by 0
         require(b > 0, errorMessage);
         uint256 c = a / b;
@@ -448,6 +497,7 @@ library SafeMath {
      * - The divisor cannot be zero.
      */
     function mod(uint256 a, uint256 b) internal pure returns (uint256) {
+
         return mod(a, b, "SafeMath: modulo by zero");
     }
 
@@ -465,12 +515,11 @@ library SafeMath {
      * _Available since v2.4.0._
      */
     function mod(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
+
         require(b != 0, errorMessage);
         return a % b;
     }
 }
-
-// File: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.5.1/contracts/token/ERC20/IERC20.sol
 
 
 
@@ -479,6 +528,7 @@ library SafeMath {
  * the optional functions; to access them see {ERC20Detailed}.
  */
 interface IERC20 {
+
     /**
      * @dev Returns the amount of tokens in existence.
      */
@@ -549,16 +599,15 @@ interface IERC20 {
     event Approval(address indexed owner, address indexed spender, uint256 value);
 }
 
-// File: Pre-Sale.sol
 
 
+contract DMG_PreSale is ReentrancyGuard, Context, Ownable {
 
-contract FTV_PreSale is ReentrancyGuard, Context, Ownable {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
     IERC20 private _token;
-    address payable private _wallet;
+    address private _wallet;
     uint256 private _rate;
     uint256 private _weiRaised;
     uint256 public endICO;
@@ -574,7 +623,8 @@ contract FTV_PreSale is ReentrancyGuard, Context, Ownable {
     event AirdropClaimed(address receiver, uint256 amount);
     event WhitelistSetted(address[] recipient, uint256[] amount);
 
-    constructor (uint256 rate, address payable wallet, IERC20 token) public {
+    constructor (uint256 rate, address wallet, IERC20 token) {
+
         require(rate > 0, "Pre-Sale: rate is 0");
         require(wallet != address(0), "Pre-Sale: wallet is the zero address");
         require(address(token) != address(0), "Pre-Sale: token is the zero address");
@@ -585,8 +635,9 @@ contract FTV_PreSale is ReentrancyGuard, Context, Ownable {
     }
 
 
-    function () external payable {
-        if(endICO > 0 && now < endICO){
+    receive() external payable {
+
+        if(endICO > 0 && block.timestamp < endICO){
             buyTokens(_msgSender());
         }
         else{
@@ -596,7 +647,7 @@ contract FTV_PreSale is ReentrancyGuard, Context, Ownable {
 
     //Start Pre-Sale
     function startICO(uint endDate, uint _minPurchase, uint _maxPurchase, uint _availableTokens) external onlyOwner icoNotActive() {
-        require(endDate > now, 'duration should be > 0');
+        require(endDate > block.timestamp, 'duration should be > 0');
         require(_availableTokens > 0 && _availableTokens <= _token.totalSupply(), 'availableTokens should be > 0 and <= totalSupply');
         require(_minPurchase > 0, '_minPurchase should > 0');
         endICO = endDate;
@@ -645,25 +696,25 @@ contract FTV_PreSale is ReentrancyGuard, Context, Ownable {
     }
 
     function _forwardFunds() internal {
-        _wallet.transfer(msg.value);
+        payable(_wallet).transfer(msg.value);
     }
 
      function withdraw() external onlyOwner {
          require(address(this).balance > 0, 'Contract has no money');
-        _wallet.transfer(address(this).balance);
+        payable(_wallet).transfer(address(this).balance);
     }
 
-    function token() public view returns (IERC20) {
+    function getToken() public view returns (IERC20) {
         return _token;
     }
 
 
-    function wallet() public view returns (address payable) {
+    function getWallet() public view returns (address) {
         return _wallet;
     }
 
 
-    function rate() public view returns (uint256) {
+    function getRate() public view returns (uint256) {
         return _rate;
     }
 
@@ -680,12 +731,12 @@ contract FTV_PreSale is ReentrancyGuard, Context, Ownable {
     }
 
     modifier icoActive() {
-        require(endICO > 0 && now < endICO && availableTokensICO > 0, "ICO must be active");
+        require(endICO > 0 && block.timestamp < endICO && availableTokensICO > 0, "ICO must be active");
         _;
     }
 
     modifier icoNotActive() {
-        require(endICO < now, 'ICO should not be active');
+        require(endICO < block.timestamp, 'ICO should not be active');
         _;
     }
 
