@@ -178,6 +178,7 @@ library Address {
 }
 
 contract Ownable is Context {
+
     address private _owner;
     address private _previousOwner;
     uint256 private _lockTime;
@@ -446,11 +447,21 @@ interface IUniswapV2Router02 is IUniswapV2Router01 {
     ) external;
 }
 
+// DemoGreen Contract
 contract DemoGreen is Context, IERC20, Ownable {
+
     using SafeMath for uint256;
     using Address for address;
 
-    address payable public rewardAddress = payable(0xA7482C9c5926E88d85804A969c383730Ce100639); // Green & Clean Environment Reward Address
+    // Green & Clean Environment Reward Address
+    address payable public rewardAddress = payable(0xA7482C9c5926E88d85804A969c383730Ce100639);
+    // Partnership and Licensing Agent Address
+    address payable public partnershipAddress = payable(0xA7482C9c5926E88d85804A969c383730Ce100639);
+    // R&D firm Address
+    address payable public randdAddress = payable(0xA7482C9c5926E88d85804A969c383730Ce100639);
+    // Sale Address
+    address payable public saleAddress = payable(0xA7482C9c5926E88d85804A969c383730Ce100639);
+    // Burn Address
     address public immutable deadAddress = 0x000000000000000000000000000000000000dEaD;
 
     mapping (address => uint256) private _rOwned;
@@ -466,47 +477,58 @@ contract DemoGreen is Context, IERC20, Ownable {
     uint256 private _rTotal = (MAX - (MAX % _tTotal));
     uint256 private _tFeeTotal;
 
+    // Token Name & Token Symbol & Token Decimals
     string private _name = "DemoGreen";
     string private _symbol = "DMG";
     uint8 private _decimals = 9;
 
+    // Distribution fee to HODLings
     uint256 public _taxFee = 5;
     uint256 private _previousTaxFee = _taxFee;
 
+    // Burn Fee + Reward Fee
     uint256 public _swapFee = 10;
     uint256 private _previousSwapFee = _swapFee;
 
+    // Reward Fee percentage in Swap Fee ( 5 / 10 = 0.5 )
     uint256 public greenAndCleanEnvironmentRewardDivisor = 5;
 
-    uint256 public _maxTxAmount = 3 * 10**12 * 10**9;
-    uint256 private minimumTokensBeforeSwap = 2 * 10**11 * 10**9;
-    uint256 private buyBackUpperLimit = 1 * 10**9 * 10**9;
+    // Max transaction amount
+    uint256 public _maxTxAmount = 3 * 10**12 * 10**9; // 0.3% of Total Supply
+    uint256 private minimumTokensBeforeSwap = 2 * 10**11 * 10**9; // Minimum Tokens to do Swap
+    uint256 private buyBackUpperLimit = 1 * 10**18; // Buyback Upper Limit in BNB. 1 BNB(ETH) by default.
 
+    // External Address Max amounts
+    uint256 public _rewardAmount = 1 * 10**14 * 10**9; // 10 percent of total supply
+    uint256 public _partnershipAmount = 1 * 10**14 * 10**9; // 10 percent of total supply
+    uint256 public _randdAmount = 1 * 10**14 * 10**9; // 10 percent of total supply
+    uint256 public _saleAmount = 4 * 10**14 * 10**9; // 40 percent of total supply
+
+    // PancakeSwap(Uniswap) Router and Pair Address
     IUniswapV2Router02 public immutable uniswapV2Router;
     address public immutable uniswapV2Pair;
 
+    // Flags for features
     bool inSwapAndLiquify;
     bool public swapAndLiquifyEnabled = false;
     bool public buyBackEnabled = true;
 
+    // Anti-Bot, Anti-Whale features.
+    bool public antiWhalesEnabled = true;
+    bool public antiBotEnabled = true;
+
+    mapping(address => bool) private _isBlacklisted;
+
+    uint256 private _start_timestamp = block.timestamp;
+
+    // Events
     event RewardLiquidityProviders(uint256 tokenAmount);
     event BuyBackEnabledUpdated(bool enabled);
+    event AntiWhalesEnabledUpdated(bool enabled);
     event SwapAndLiquifyEnabledUpdated(bool enabled);
-    event SwapAndLiquify(
-        uint256 tokensSwapped,
-        uint256 ethReceived,
-        uint256 tokensIntoLiqudity
-    );
-
-    event SwapETHForTokens(
-        uint256 amountIn,
-        address[] path
-    );
-
-    event SwapTokensForETH(
-        uint256 amountIn,
-        address[] path
-    );
+    event SwapAndLiquify(uint256 tokensSwapped, uint256 ethReceived, uint256 tokensIntoLiqudity);
+    event SwapETHForTokens(uint256 amountIn, address[] path);
+    event SwapTokensForETH(uint256 amountIn, address[] path);
 
     modifier lockTheSwap {
         inSwapAndLiquify = true;
@@ -677,6 +699,30 @@ contract DemoGreen is Context, IERC20, Ownable {
         emit Approval(owner, spender, amount);
     }
 
+    function transferGreenAndCleanEnvironmentRewardTokens() external onlyOwner() {
+
+        require(balanceOf(rewardAddress) + _rewardAmount == _rewardAmount, "Green and Clean Environment Reward can have only 10% of total supply");
+        transfer(rewardAddress, _rewardAmount);
+    }
+
+    function transferPartnershipAndLicensingAgentTokens() external onlyOwner() {
+
+        require(balanceOf(partnershipAddress) + _partnershipAmount == _partnershipAmount, "Partnership and Licensing Agent can have only 10% of total supply");
+        transfer(partnershipAddress, _partnershipAmount);
+    }
+
+    function transferRAndDFirmTokens() external onlyOwner() {
+
+        require(balanceOf(randdAddress) + _randdAmount == _randdAmount, "R and D Firm can have only 10% of total supply");
+        transfer(randdAddress, _randdAmount);
+    }
+
+    function transferSaleTokens() external onlyOwner() {
+
+        require(balanceOf(saleAddress) + _saleAmount == _saleAmount, "Sale Address can have only 40% of total supply");
+        transfer(saleAddress, _saleAmount);
+    }
+
     function _transfer(
         address from,
         address to,
@@ -686,8 +732,14 @@ contract DemoGreen is Context, IERC20, Ownable {
         require(from != address(0), "ERC20: transfer from the zero address");
         require(to != address(0), "ERC20: transfer to the zero address");
         require(amount > 0, "Transfer amount must be greater than zero");
+
+        // Addresses in Blacklist can't do buy or sell.
+        require(_isBlacklisted[from] == false && _isBlacklisted[to] == false, "Blacklisted addresses can't do buy or sell");
+
         if(from != owner() && to != owner()) {
-            require(amount <= _maxTxAmount, "Transfer amount exceeds the maxTxAmount.");
+            if(antiWhalesEnabled) {
+                require(amount <= _maxTxAmount, "Transfer amount exceeds the maxTxAmount.");
+            }
         }
 
         uint256 contractTokenBalance = balanceOf(address(this));
@@ -724,7 +776,7 @@ contract DemoGreen is Context, IERC20, Ownable {
         swapTokensForEth(contractTokenBalance);
         uint256 transferredBalance = address(this).balance.sub(initialBalance);
 
-        //Send to Marketing address
+        //Send to Green And Clean Environment Reward address
         transferToAddressETH(rewardAddress, transferredBalance.div(_swapFee).mul(greenAndCleanEnvironmentRewardDivisor));
     }
 
@@ -860,6 +912,42 @@ contract DemoGreen is Context, IERC20, Ownable {
         _tFeeTotal = _tFeeTotal.add(tFee);
     }
 
+    function _getAntiDumpMultiplier() private view returns (uint256) {
+
+        uint256 time_since_start = block.timestamp - _start_timestamp;
+        uint256 hour = 60 * 60;
+
+        if (antiBotEnabled) {
+
+            if (time_since_start < 1 * hour) {
+
+                return (5);
+
+            } else if (time_since_start < 2 * hour) {
+
+                return (4);
+
+            } else if (time_since_start < 3 * hour) {
+
+                return (3);
+
+            } else if (time_since_start < 4 * hour) {
+
+                return (2);
+
+            } else {
+
+                return (1);
+
+            }
+
+        } else {
+
+            return (1);
+
+        }
+    }
+
     function _getValues(uint256 tAmount) private view returns (uint256, uint256, uint256, uint256, uint256, uint256) {
 
         (uint256 tTransferAmount, uint256 tFee, uint256 tSwap) = _getTValues(tAmount);
@@ -869,8 +957,9 @@ contract DemoGreen is Context, IERC20, Ownable {
 
     function _getTValues(uint256 tAmount) private view returns (uint256, uint256, uint256) {
 
-        uint256 tFee = calculateTaxFee(tAmount);
-        uint256 tSwap = calculateSwapFee(tAmount);
+        uint256 multiplier = _getAntiDumpMultiplier();
+        uint256 tFee = calculateTaxFee(tAmount).mul(multiplier);
+        uint256 tSwap = calculateSwapFee(tAmount).mul(multiplier);
         uint256 tTransferAmount = tAmount.sub(tFee).sub(tSwap);
         return (tTransferAmount, tFee, tSwap);
     }
@@ -954,6 +1043,14 @@ contract DemoGreen is Context, IERC20, Ownable {
         _isExcludedFromFee[account] = false;
     }
 
+    function setAddressAsBlacklisted(address account) public onlyOwner {
+        _isBlacklisted[account] = true;
+    }
+
+    function setAddressAsWhitelisted(address account) public onlyOwner {
+        _isBlacklisted[account] = false;
+    }
+
     function setTaxFeePercent(uint256 taxFee) external onlyOwner() {
 
         _taxFee = taxFee;
@@ -984,9 +1081,24 @@ contract DemoGreen is Context, IERC20, Ownable {
         buyBackUpperLimit = buyBackLimit * 10**18;
     }
 
-    function setMarketingAddress(address _rewardAddress) external onlyOwner() {
+    function setGreenAndCleanEnvironmentRewardAddress(address _rewardAddress) external onlyOwner() {
 
         rewardAddress = payable(_rewardAddress);
+    }
+
+    function setPartnershipAndLicensingAgentAddress(address _partnershipAddress) external onlyOwner() {
+
+        partnershipAddress = payable(_partnershipAddress);
+    }
+
+    function setRAndDAddress(address _randdAddress) external onlyOwner() {
+
+        randdAddress = payable(_randdAddress);
+    }
+
+    function setSaleAddress(address _saleAddress) external onlyOwner() {
+
+        saleAddress = payable(_saleAddress);
     }
 
     function setSwapAndLiquifyEnabled(bool _enabled) public onlyOwner() {
@@ -999,6 +1111,12 @@ contract DemoGreen is Context, IERC20, Ownable {
 
         buyBackEnabled = _enabled;
         emit BuyBackEnabledUpdated(_enabled);
+    }
+
+    function setAntiWhaleEnabled(bool _enabled) public onlyOwner() {
+
+        antiWhalesEnabled = _enabled;
+        emit AntiWhalesEnabledUpdated(_enabled);
     }
 
     function prepareForPreSale() external onlyOwner() {
