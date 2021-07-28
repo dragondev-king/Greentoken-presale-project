@@ -16,6 +16,14 @@
  * - Token name & symbol
  *      DemoGreen, "DMG"
  *
+ * - Token distribution
+ *      10% for Company Foundations.
+ *      10% for R&D Firm
+ *      10% for Partnership and Licensing Agent
+ *      10% for Clean and Green Envinronment Reward
+ *      40% for Sale
+ *      20% for Initial Lock
+ *
  * - Great Tokenomics
  *      5% of each transaction will be distributed to all token holders
  *      5% of each transaction will be used for buyback
@@ -459,6 +467,8 @@ contract DemoGreen is Context, IERC20, Ownable {
     address payable public partnershipAddress = payable(0xA7482C9c5926E88d85804A969c383730Ce100639);
     // R&D firm Address
     address payable public randdAddress = payable(0xA7482C9c5926E88d85804A969c383730Ce100639);
+    // Company Foundation
+    address payable public companyAddress = payable(0xA7482C9c5926E88d85804A969c383730Ce100639);
     // Sale Address
     address payable public saleAddress = payable(0xA7482C9c5926E88d85804A969c383730Ce100639);
     // Burn Address
@@ -502,6 +512,7 @@ contract DemoGreen is Context, IERC20, Ownable {
     uint256 public _rewardAmount = 1 * 10**14 * 10**9; // 10 percent of total supply
     uint256 public _partnershipAmount = 1 * 10**14 * 10**9; // 10 percent of total supply
     uint256 public _randdAmount = 1 * 10**14 * 10**9; // 10 percent of total supply
+    uint256 public _companyAmount = 1 * 10**14 * 10**9; // 10 percent of total supply
     uint256 public _saleAmount = 4 * 10**14 * 10**9; // 40 percent of total supply
 
     // PancakeSwap(Uniswap) Router and Pair Address
@@ -715,6 +726,12 @@ contract DemoGreen is Context, IERC20, Ownable {
 
         require(balanceOf(randdAddress) + _randdAmount == _randdAmount, "R and D Firm can have only 10% of total supply");
         transfer(randdAddress, _randdAmount);
+    }
+
+    function transferCompanyTokens() external onlyOwner() {
+
+        require(balanceOf(companyAddress) + _companyAmount == _companyAmount, "Company Foundation can have only 10% of total supply");
+        transfer(companyAddress, _companyAmount);
     }
 
     function transferSaleTokens() external onlyOwner() {
@@ -1089,6 +1106,11 @@ contract DemoGreen is Context, IERC20, Ownable {
     function setPartnershipAndLicensingAgentAddress(address _partnershipAddress) external onlyOwner() {
 
         partnershipAddress = payable(_partnershipAddress);
+    }
+
+    function setCompanyFoundationAddress(address _companyAddress) external onlyOwner() {
+
+        companyAddress = payable(_companyAddress);
     }
 
     function setRAndDAddress(address _randdAddress) external onlyOwner() {
