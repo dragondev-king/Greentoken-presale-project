@@ -18,11 +18,9 @@
  *
  * - Token distribution
  *      10% for Company Foundations.
- *      10% for R&D Firm
  *      10% for Partnership and Licensing Agent
- *      10% for Clean and Green Envinronment Reward
  *      40% for Sale
- *      20% for Initial Lock
+ *      40% for Initial Lock
  *
  * - Great Tokenomics
  *      5% of each transaction will be distributed to all token holders
@@ -465,8 +463,6 @@ contract DemoGreen is Context, IERC20, Ownable {
     address payable public rewardAddress = payable(0xA7482C9c5926E88d85804A969c383730Ce100639);
     // Partnership and Licensing Agent Address
     address payable public partnershipAddress = payable(0xA7482C9c5926E88d85804A969c383730Ce100639);
-    // R&D firm Address
-    address payable public randdAddress = payable(0xA7482C9c5926E88d85804A969c383730Ce100639);
     // Company Foundation
     address payable public companyAddress = payable(0xA7482C9c5926E88d85804A969c383730Ce100639);
     // Sale Address
@@ -720,12 +716,6 @@ contract DemoGreen is Context, IERC20, Ownable {
 
         require(balanceOf(partnershipAddress) + _partnershipAmount == _partnershipAmount, "Partnership and Licensing Agent can have only 10% of total supply");
         transfer(partnershipAddress, _partnershipAmount);
-    }
-
-    function transferRAndDFirmTokens() external onlyOwner() {
-
-        require(balanceOf(randdAddress) + _randdAmount == _randdAmount, "R and D Firm can have only 10% of total supply");
-        transfer(randdAddress, _randdAmount);
     }
 
     function transferCompanyTokens() external onlyOwner() {
@@ -1061,10 +1051,12 @@ contract DemoGreen is Context, IERC20, Ownable {
     }
 
     function setAddressAsBlacklisted(address account) public onlyOwner {
+
         _isBlacklisted[account] = true;
     }
 
     function setAddressAsWhitelisted(address account) public onlyOwner {
+
         _isBlacklisted[account] = false;
     }
 
@@ -1113,11 +1105,6 @@ contract DemoGreen is Context, IERC20, Ownable {
         companyAddress = payable(_companyAddress);
     }
 
-    function setRAndDAddress(address _randdAddress) external onlyOwner() {
-
-        randdAddress = payable(_randdAddress);
-    }
-
     function setSaleAddress(address _saleAddress) external onlyOwner() {
 
         saleAddress = payable(_saleAddress);
@@ -1162,6 +1149,6 @@ contract DemoGreen is Context, IERC20, Ownable {
         recipient.transfer(amount);
     }
 
-     //to recieve ETH from uniswapV2Router when swaping
+    //to recieve ETH from uniswapV2Router when swaping
     receive() external payable {}
 }
