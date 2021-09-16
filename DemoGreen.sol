@@ -17,11 +17,14 @@
  *      DemoGreen, "DMG"
  *
  * - Token distribution
- *      20% for Company Foundations
- *      10% for Partnership and Licensing Agent
- *      20% for Green and Clean Environment Reward
- *      40% for Sale
- *      10% for Airdrop
+ *      10% for Company Foundations
+ *      5% for Partnership and Licensing Agent
+ *      5% for Green and Clean Environment Reward
+ *      
+        70% for Sale
+ *      5% for Airdrop
+ *      5% for NFT Marketplace
+ *      40% for Public Sale over Pancaleswap.
  *
  * - Great Tokenomics
  *      5% of each transaction will be distributed to all token holders
@@ -466,6 +469,10 @@ contract DemoGreen is Context, IERC20, Ownable {
     address payable public partnershipAddress = payable(0x3eD588aC5310e0D16bf98632Ea7a8b472B9CA6DC);
     // Company Foundation
     address payable public companyAddress = payable(0x178077A67422168f0Ba36fF73638B00AE86d083e);
+    // Airdrop
+    address payable public airdropAddress = payable(0xB5150f00795Ac7C887D00a19BE8F73b89025F983);
+    // Marketplace
+    address payable public marketplaceAddress = payable(0x399ABE01fA03Ec00417C05193D7bC6C22E64C51E);
     // Burn Address
     address public immutable deadAddress = 0x000000000000000000000000000000000000dEaD;
 
@@ -504,9 +511,11 @@ contract DemoGreen is Context, IERC20, Ownable {
     uint256 private buyBackUpperLimit = 1 * 10**18; // Buyback Upper Limit in BNB. 1 BNB(ETH) by default.
 
     // External Address Max amounts
-    uint256 public _companyAmount = 2 * 10**14 * 10**9; // 20 percent of total supply
-    uint256 public _rewardAmount = 1 * 10**14 * 10**9; // 10 percent of total supply
-    uint256 public _partnershipAmount = 2 * 10**14 * 10**9; // 20 percent of total supply
+    uint256 public _companyAmount = 1 * 10**14 * 10**9; // 10 percent of total supply
+    uint256 public _rewardAmount = 5 * 10**13 * 10**9; // 5 percent of total supply
+    uint256 public _partnershipAmount = 5 * 10**13 * 10**9; // 5 percent of total supply
+    uint256 public _airdropAmount = 5 * 10**13 * 10**9; // 5 percent of total supply
+    uint256 public _marketplaceAmount = 5 * 10**13 * 10**9; // 5 percent of total supply
 
     // PancakeSwap(Uniswap) Router and Pair Address
     IUniswapV2Router02 public immutable uniswapV2Router;
@@ -705,13 +714,13 @@ contract DemoGreen is Context, IERC20, Ownable {
 
     function transferGreenAndCleanEnvironmentRewardTokens() external onlyOwner() {
 
-        require(balanceOf(rewardAddress) + _rewardAmount == _rewardAmount, "Green and Clean Environment Reward can have only 10% of total supply");
+        require(balanceOf(rewardAddress) + _rewardAmount == _rewardAmount, "Green and Clean Environment Reward can have only 5% of total supply");
         transfer(rewardAddress, _rewardAmount);
     }
 
     function transferPartnershipAndLicensingAgentTokens() external onlyOwner() {
 
-        require(balanceOf(partnershipAddress) + _partnershipAmount == _partnershipAmount, "Partnership and Licensing Agent can have only 10% of total supply");
+        require(balanceOf(partnershipAddress) + _partnershipAmount == _partnershipAmount, "Partnership and Licensing Agent can have only 5% of total supply");
         transfer(partnershipAddress, _partnershipAmount);
     }
 
@@ -719,6 +728,18 @@ contract DemoGreen is Context, IERC20, Ownable {
 
         require(balanceOf(companyAddress) + _companyAmount == _companyAmount, "Company Foundation can have only 10% of total supply");
         transfer(companyAddress, _companyAmount);
+    }
+
+    function transferAirdropTokens() external onlyOwner() {
+
+        require(balanceOf(airdropAddress) + _airdropAmount == _airdropAmount, "Airdrop can have only 5% of total supply");
+        transfer(airdropAddress, _airdropAmount);
+    }
+
+    function transferMarketplaceTokens() external onlyOwner() {
+
+        require(balanceOf(marketplaceAddress) + _marketplaceAmount == _marketplaceAmount, "Marketplace can have only 5% of total supply");
+        transfer(marketplaceAddress, _marketplaceAmount);
     }
     
     function _transfer(
@@ -1096,6 +1117,16 @@ contract DemoGreen is Context, IERC20, Ownable {
         companyAddress = payable(_companyAddress);
     }
 
+    function setAirdropAddress(address _airdropAddress) external onlyOwner() {
+
+        airdropAddress = payable(_airdropAddress);
+    }
+
+    function setMarketplaceAddress(address _marketplaceAddress) external onlyOwner() {
+
+        marketplaceAddress = payable(_marketplaceAddress);
+    }
+
     function setSwapAndLiquifyEnabled(bool _enabled) public onlyOwner() {
 
         swapAndLiquifyEnabled = _enabled;
@@ -1119,8 +1150,8 @@ contract DemoGreen is Context, IERC20, Ownable {
         setSwapAndLiquifyEnabled(false);
         _taxFee = 0;
         _swapFee = 0;
-	    _previousTaxFee = 0;
-    	_previousSwapFee = 0;
+	      _previousTaxFee = 0;
+    	  _previousSwapFee = 0;
         _maxTxAmount = 1 * 10**15 * 10**9;
     }
 
