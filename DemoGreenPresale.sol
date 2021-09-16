@@ -378,7 +378,7 @@ contract DemoGreel_PreSale is ReentrancyGuard, Context, Ownable {
 
     function _getTokenAmount(uint256 weiAmount) internal view returns (uint256) {
 
-        return weiAmount.mul(_rate).div(100000);
+        return weiAmount.mul(_rate).div(100);
     }
 
     function _forwardFunds() internal {
