@@ -466,13 +466,15 @@ contract DemoGreen is Context, IERC20, Ownable {
 
     // Green & Clean Environment Reward Address
     address payable public rewardAddress = payable(0x1b0155e319d0c77DA13A1644b1d200794c18Ec87);
+    // Contest Address
+    address payable public contestAddress = payable(0x4c4b60d86CFfBF2eFaF98C927359525c0406BA3F);
     // Partnership and Licensing Agent Address
     address payable public partnershipAddress = payable(0x3eD588aC5310e0D16bf98632Ea7a8b472B9CA6DC);
     // Company Foundation
     address payable public companyAddress = payable(0x178077A67422168f0Ba36fF73638B00AE86d083e);
-    // Airdrop
+    // Airdrop Address
     address payable public airdropAddress = payable(0xB5150f00795Ac7C887D00a19BE8F73b89025F983);
-    // Marketplace
+    // Marketplace Address
     address payable public marketplaceAddress = payable(0x399ABE01fA03Ec00417C05193D7bC6C22E64C51E);
     // Burn Address
     address public immutable deadAddress = 0x000000000000000000000000000000000000dEaD;
@@ -504,7 +506,8 @@ contract DemoGreen is Context, IERC20, Ownable {
     uint256 private _previousSwapFee = _swapFee;
 
     // Reward Fee percentage in Swap Fee ( 5 / 10 = 0.5 )
-    uint256 public greenAndCleanEnvironmentRewardDivisor = 5;
+    uint256 public greenAndCleanEnvironmentRewardDivisor = 2;
+    uint256 public contestDivisor = 3;
 
     // Max transaction amount
     uint256 public _maxTxAmount = 3 * 10**12 * 10**9; // 0.3% of Total Supply
@@ -807,6 +810,7 @@ contract DemoGreen is Context, IERC20, Ownable {
 
         //Send to Green And Clean Environment Reward address
         transferToAddressETH(rewardAddress, transferredBalance.div(_swapFee).mul(greenAndCleanEnvironmentRewardDivisor));
+        transferToAddressETH(rewardAddress, transferredBalance.div(_swapFee).mul(contestDivisor));
     }
 
 
@@ -1107,7 +1111,7 @@ contract DemoGreen is Context, IERC20, Ownable {
         minimumTokensBeforeSwap = _minimumTokensBeforeSwap;
     }
 
-     function setBuybackUpperLimit(uint256 buyBackLimit) external onlyOwner() {
+    function setBuybackUpperLimit(uint256 buyBackLimit) external onlyOwner() {
 
         buyBackUpperLimit = buyBackLimit * 10**18;
     }
@@ -1115,6 +1119,11 @@ contract DemoGreen is Context, IERC20, Ownable {
     function setGreenAndCleanEnvironmentRewardAddress(address _rewardAddress) external onlyOwner() {
 
         rewardAddress = payable(_rewardAddress);
+    }
+
+    function setContestAddress(address _contestAddress) external onlyOwner() {
+
+        contestAddress = payable(_contestAddress);
     }
 
     function setPartnershipAndLicensingAgentAddress(address _partnershipAddress) external onlyOwner() {
