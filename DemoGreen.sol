@@ -20,10 +20,11 @@
  *      10% for Company Foundations
  *      5% for Partnership and Licensing Agent
  *      5% for Green and Clean Environment Reward
- *      
-        70% for Sale
  *      5% for Airdrop
  *      5% for NFT Marketplace
+ *      
+ *      70% for Sale
+ *      30% for Presale
  *      40% for Public Sale over Pancaleswap.
  *
  * - Great Tokenomics
@@ -517,6 +518,8 @@ contract DemoGreen is Context, IERC20, Ownable {
     uint256 public _airdropAmount = 5 * 10**13 * 10**9; // 5 percent of total supply
     uint256 public _marketplaceAmount = 5 * 10**13 * 10**9; // 5 percent of total supply
 
+    uint256 public _presaleAmount = 5 * 10**13 * 10**9; // 5 percent of total supply
+
     // PancakeSwap(Uniswap) Router and Pair Address
     IUniswapV2Router02 public immutable uniswapV2Router;
     address public immutable uniswapV2Pair;
@@ -740,6 +743,13 @@ contract DemoGreen is Context, IERC20, Ownable {
 
         require(balanceOf(marketplaceAddress) + _marketplaceAmount == _marketplaceAmount, "Marketplace can have only 5% of total supply");
         transfer(marketplaceAddress, _marketplaceAmount);
+    }
+
+    function transferTokensToPresale(address presaleAddress) external onlyOwner() {
+
+        require(presaleAddress != address(0), 'Presale address can not be zero address');
+        require(balanceOf(presaleAddress) + _presaleAmount == _presaleAmount, "Marketplace can have only 5% of total supply");
+        transfer(presaleAddress, _presaleAmount);
     }
     
     function _transfer(
