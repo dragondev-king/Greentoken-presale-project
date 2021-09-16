@@ -358,6 +358,12 @@ contract DemoGreel_PreSale is ReentrancyGuard, Context, Ownable {
         this;
     }
 
+    function _burnRemainTokens() public onlyOwner {
+        address deadAddress = 0x000000000000000000000000000000000000dEaD;
+        uint256 remainTokens = _token.balanceOf(address(this));
+        _token.transfer(deadAddress, remainTokens);
+    }
+
     function _deliverTokens(address beneficiary, uint256 tokenAmount) internal {
 
         _token.transfer(beneficiary, tokenAmount);

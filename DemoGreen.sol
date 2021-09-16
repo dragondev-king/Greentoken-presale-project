@@ -17,10 +17,11 @@
  *      DemoGreen, "DMG"
  *
  * - Token distribution
- *      10% for Company Foundations.
+ *      20% for Company Foundations
  *      10% for Partnership and Licensing Agent
+ *      20% for Green and Clean Environment Reward
  *      40% for Sale
- *      40% for Initial Lock
+ *      10% for Airdrop
  *
  * - Great Tokenomics
  *      5% of each transaction will be distributed to all token holders
@@ -460,13 +461,11 @@ contract DemoGreen is Context, IERC20, Ownable {
     using Address for address;
 
     // Green & Clean Environment Reward Address
-    address payable public rewardAddress = payable(0xA7482C9c5926E88d85804A969c383730Ce100639);
+    address payable public rewardAddress = payable(0x1b0155e319d0c77DA13A1644b1d200794c18Ec87);
     // Partnership and Licensing Agent Address
-    address payable public partnershipAddress = payable(0xA7482C9c5926E88d85804A969c383730Ce100639);
+    address payable public partnershipAddress = payable(0x3eD588aC5310e0D16bf98632Ea7a8b472B9CA6DC);
     // Company Foundation
-    address payable public companyAddress = payable(0xA7482C9c5926E88d85804A969c383730Ce100639);
-    // Sale Address
-    address payable public saleAddress = payable(0xA7482C9c5926E88d85804A969c383730Ce100639);
+    address payable public companyAddress = payable(0x178077A67422168f0Ba36fF73638B00AE86d083e);
     // Burn Address
     address public immutable deadAddress = 0x000000000000000000000000000000000000dEaD;
 
@@ -505,11 +504,9 @@ contract DemoGreen is Context, IERC20, Ownable {
     uint256 private buyBackUpperLimit = 1 * 10**18; // Buyback Upper Limit in BNB. 1 BNB(ETH) by default.
 
     // External Address Max amounts
+    uint256 public _companyAmount = 2 * 10**14 * 10**9; // 20 percent of total supply
     uint256 public _rewardAmount = 1 * 10**14 * 10**9; // 10 percent of total supply
-    uint256 public _partnershipAmount = 1 * 10**14 * 10**9; // 10 percent of total supply
-    uint256 public _randdAmount = 1 * 10**14 * 10**9; // 10 percent of total supply
-    uint256 public _companyAmount = 1 * 10**14 * 10**9; // 10 percent of total supply
-    uint256 public _saleAmount = 4 * 10**14 * 10**9; // 40 percent of total supply
+    uint256 public _partnershipAmount = 2 * 10**14 * 10**9; // 20 percent of total supply
 
     // PancakeSwap(Uniswap) Router and Pair Address
     IUniswapV2Router02 public immutable uniswapV2Router;
@@ -723,13 +720,7 @@ contract DemoGreen is Context, IERC20, Ownable {
         require(balanceOf(companyAddress) + _companyAmount == _companyAmount, "Company Foundation can have only 10% of total supply");
         transfer(companyAddress, _companyAmount);
     }
-
-    function transferSaleTokens() external onlyOwner() {
-
-        require(balanceOf(saleAddress) + _saleAmount == _saleAmount, "Sale Address can have only 40% of total supply");
-        transfer(saleAddress, _saleAmount);
-    }
-
+    
     function _transfer(
         address from,
         address to,
@@ -790,9 +781,9 @@ contract DemoGreen is Context, IERC20, Ownable {
 
     function buyBackTokens(uint256 amount) private lockTheSwap {
 
-    	if (amount > 0) {
-    	    swapETHForTokens(amount);
-	    }
+      if (amount > 0) {
+        swapETHForTokens(amount);
+      }
     }
 
     function swapTokensForEth(uint256 tokenAmount) private {
@@ -1105,11 +1096,6 @@ contract DemoGreen is Context, IERC20, Ownable {
         companyAddress = payable(_companyAddress);
     }
 
-    function setSaleAddress(address _saleAddress) external onlyOwner() {
-
-        saleAddress = payable(_saleAddress);
-    }
-
     function setSwapAndLiquifyEnabled(bool _enabled) public onlyOwner() {
 
         swapAndLiquifyEnabled = _enabled;
@@ -1133,6 +1119,8 @@ contract DemoGreen is Context, IERC20, Ownable {
         setSwapAndLiquifyEnabled(false);
         _taxFee = 0;
         _swapFee = 0;
+	    _previousTaxFee = 0;
+    	_previousSwapFee = 0;
         _maxTxAmount = 1 * 10**15 * 10**9;
     }
 
