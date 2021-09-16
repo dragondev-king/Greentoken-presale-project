@@ -518,7 +518,7 @@ contract DemoGreen is Context, IERC20, Ownable {
     uint256 public _airdropAmount = 5 * 10**13 * 10**9; // 5 percent of total supply
     uint256 public _marketplaceAmount = 5 * 10**13 * 10**9; // 5 percent of total supply
 
-    uint256 public _presaleAmount = 5 * 10**13 * 10**9; // 5 percent of total supply
+    uint256 public _presaleAmount = 3 * 10**14 * 10**9; // 30 percent of total supply
 
     // PancakeSwap(Uniswap) Router and Pair Address
     IUniswapV2Router02 public immutable uniswapV2Router;
