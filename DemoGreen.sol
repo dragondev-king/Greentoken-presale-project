@@ -29,7 +29,7 @@
  *      5% of each transaction will be used for Green & Clean Environment reference
  */
 
- pragma solidity ^0.8.6;
+ pragma solidity ^0.8.7;
 
  abstract contract Context {
     function _msgSender() internal view virtual returns (address payable) {
