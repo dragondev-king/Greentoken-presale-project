@@ -268,10 +268,12 @@ interface IERC20 {
 
 
 
-contract DemoGreel_PreSale is ReentrancyGuard, Context, Ownable {
+contract Public_PreSale is ReentrancyGuard, Context, Ownable {
 
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
+
+    uint256 private constant MIN_LOCKTIME = 1 weeks;
 
     IERC20 private _token;
     address private _wallet;
@@ -279,6 +281,8 @@ contract DemoGreel_PreSale is ReentrancyGuard, Context, Ownable {
 
     uint256 private _weiRaised;
     uint256 public endICO;
+
+    uint256 public unlockableTime = 0;
 
     uint public minPurchase;
     uint public maxPurchase;
@@ -300,23 +304,24 @@ contract DemoGreel_PreSale is ReentrancyGuard, Context, Ownable {
         _token = token;
     }
 
+    function lock(uint256 endDate) public onlyOwner {
+        require(unlockableTime == 0, "LOCK: this contract already lock tokens");
+        require(endDate > block.timestamp + MIN_LOCKTIME, "LOCK: endDate should be more than 1 week later from now");
 
-    receive() external payable {
+        unlockableTime = endDate;
+    }
 
-        if(endICO > 0 && block.timestamp < endICO){
-            buyTokens(_msgSender());
-        }
-        else{
-            revert('Pre-Sale is closed');
-        }
+    function unlock() public onlyOwner {
+        unlockableTime = 0;
     }
 
     //Start Pre-Sale
     function startICO(uint endDate, uint _minPurchase, uint _maxPurchase, uint _availableTokens) external onlyOwner icoNotActive() {
 
-        require(endDate > block.timestamp, 'duration should be > 0');
-        require(_availableTokens > 0 && _availableTokens <= _token.totalSupply(), 'availableTokens should be > 0 and <= totalSupply');
-        require(_minPurchase > 0, '_minPurchase should > 0');
+        require(unlockableTime == 0, "ICO: Tokens in the contract had been locked.");
+        require(endDate > block.timestamp, 'ICO: Duration should be greater than zero');
+        require(_availableTokens > 0 && _availableTokens <= _token.totalSupply(), 'ICO: availableTokens should be greater than zero and <= totalSupply');
+        require(_minPurchase > 0, 'ICO: _minPurchase should be greater than zero');
 
         endICO = endDate;
         availableTokensICO = _availableTokens;
@@ -330,8 +335,6 @@ contract DemoGreel_PreSale is ReentrancyGuard, Context, Ownable {
         endICO = 0;
     }
 
-
-    //Pre-Sale
     function buyTokens(address beneficiary) public nonReentrant icoActive payable {
 
         uint256 weiAmount = msg.value;
@@ -369,12 +372,10 @@ contract DemoGreel_PreSale is ReentrancyGuard, Context, Ownable {
         _token.transfer(beneficiary, tokenAmount);
     }
 
-
     function _processPurchase(address beneficiary, uint256 tokenAmount) internal {
 
         _deliverTokens(beneficiary, tokenAmount);
     }
-
 
     function _getTokenAmount(uint256 weiAmount) internal view returns (uint256) {
 
@@ -436,4 +437,13 @@ contract DemoGreel_PreSale is ReentrancyGuard, Context, Ownable {
         _;
     }
 
+    receive() external payable {
+
+        if(endICO > 0 && block.timestamp < endICO){
+            buyTokens(_msgSender());
+        }
+        else{
+            revert('Pre-Sale is closed');
+        }
+    }
 }

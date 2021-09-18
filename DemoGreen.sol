@@ -782,7 +782,7 @@ contract DemoGreen is Context, IERC20, Ownable {
                 contractTokenBalance = minimumTokensBeforeSwap;
                 swapTokens(contractTokenBalance);
             }
-	        uint256 balance = address(this).balance;
+            uint256 balance = address(this).balance;
             if (buyBackEnabled && balance > uint256(1 * 10**18)) {
 
                 if (balance > buyBackUpperLimit)
