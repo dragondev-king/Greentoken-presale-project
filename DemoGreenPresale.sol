@@ -293,6 +293,18 @@ contract Public_PreSale is ReentrancyGuard, Context, Ownable {
 
     event TokensPurchased(address indexed purchaser, address indexed beneficiary, uint256 value, uint256 amount);
 
+    modifier icoActive() {
+
+        require(endICO > 0 && block.timestamp < endICO && availableTokensICO > 0, "ICO must be active");
+        _;
+    }
+
+    modifier icoNotActive() {
+
+        require(endICO < block.timestamp, 'ICO should not be active');
+        _;
+    }
+
     constructor (uint256 rate, address wallet, IERC20 token) {
 
         require(rate > 0, "Pre-Sale: rate is 0");
@@ -338,8 +350,8 @@ contract Public_PreSale is ReentrancyGuard, Context, Ownable {
     function buyTokens(address beneficiary) public nonReentrant icoActive payable {
 
         uint256 weiAmount = msg.value;
-        _preValidatePurchase(beneficiary, weiAmount);
 
+        _preValidatePurchase(beneficiary, weiAmount);
         uint256 tokens = _getTokenAmount(weiAmount);
 
         _weiRaised = _weiRaised.add(weiAmount);
@@ -393,13 +405,13 @@ contract Public_PreSale is ReentrancyGuard, Context, Ownable {
         payable(_wallet).transfer(address(this).balance);
     }
 
-    function getToken() public view returns (IERC20) {
+    function getTokenAddress() public view returns (IERC20) {
 
         return _token;
     }
 
 
-    function getWallet() public view returns (address) {
+    function getWalletAddress() public view returns (address) {
 
         return _wallet;
     }
@@ -423,18 +435,6 @@ contract Public_PreSale is ReentrancyGuard, Context, Ownable {
     function weiRaised() public view returns (uint256) {
 
         return _weiRaised;
-    }
-
-    modifier icoActive() {
-
-        require(endICO > 0 && block.timestamp < endICO && availableTokensICO > 0, "ICO must be active");
-        _;
-    }
-
-    modifier icoNotActive() {
-
-        require(endICO < block.timestamp, 'ICO should not be active');
-        _;
     }
 
     receive() external payable {
