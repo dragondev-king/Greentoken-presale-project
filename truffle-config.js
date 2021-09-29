@@ -20,7 +20,7 @@
 
 require("dotenv").config();
 const HDWalletProvider = require("@truffle/hdwallet-provider");
-
+console.log(`https://kovan.infura.io/v3/${process.env.PROJECT_ID}`);
 module.exports = {
   networks: {
     // Another network with more advanced options...
@@ -35,11 +35,15 @@ module.exports = {
     // Useful for deploying to a public network.
     kovan: {
       provider: () =>
-        new HDWalletProvider(
-          process.env.MNEMONIC,
-          `https://kovan.infura.io/v3/${process.env.PROJECT_ID}`
-        ),
+        new HDWalletProvider({
+          mnemonic: {
+            phrase: process.env.MNEMONIC,
+          },
+          providerOrUrl: `https://kovan.infura.io/v3/${process.env.PROJECT_ID}`,
+          pollingInterval: 8000,
+        }),
       network_id: 42, // Kovan's id
+      networkCheckTimeout: 1000000000,
       gas: 5500000, // Ropsten has a lower block limit than mainnet
       confirmations: 2, // # of confs to wait between deployments. (default: 0)
       timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)
@@ -55,17 +59,19 @@ module.exports = {
   // Configure your compilers
   compilers: {
     solc: {
-      // version: "0.5.1",    // Fetch exact version from solc-bin (default: truffle's version)
+      version: "^0.8.7", // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
-      // settings: {          // See the solidity docs for advice about optimization and evmVersion
-      //  optimizer: {
-      //    enabled: false,
-      //    runs: 200
-      //  },
-      //  evmVersion: "byzantium"
-      // }
+      settings: {
+        // See the solidity docs for advice about optimization and evmVersion
+        optimizer: {
+          enabled: true,
+          runs: 200,
+        },
+        //  evmVersion: "byzantium"
+      },
     },
   },
+  plugin: ["truffle-plugin-verify"],
 
   // Truffle DB is currently disabled by default; to enable it, change enabled:
   // false to enabled: true. The default storage location can also be
