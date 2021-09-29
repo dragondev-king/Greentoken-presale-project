@@ -19,7 +19,7 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 // DemoGreen Airdrop & Claim Feature
-contract AirDrop is Context, IERC20, Ownable {
+contract AirDrop is Context, Ownable {
   using SafeMath for uint256;
   using Address for address;
 
