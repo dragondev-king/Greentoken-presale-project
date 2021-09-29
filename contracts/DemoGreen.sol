@@ -1,82 +1,82 @@
-// SPDX-License-Identifier: MIT
+    // SPDX-License-Identifier: MIT
 
-/**
- * &&&&&&   &&&&&&&  &&&& &&&&   &&&&     &&&&   &&&&&   &&&&&&  &&&&&&& &&&    &&     &&
- * &&&&&&&  &&&&&&&& &&&&&&&&&  &&&&&&   &&&&&&  &&&&&&  &&&&&&& &&&&&&  && &&  &&    &&&
- * &&   &&& &&       && &&& && &&    && &&       &&   && &&      &&      && &&  &&    &&&&&
- * &&    && &&&&&&   &&  &  && &&    && &&  &&&& &&&&&&  &&&&&&  &&&&&   &&  && &&  &&&&&&
- * @@    @@ @@@@@    @@     @@ @@    @@ @@  @@@@ @@@@@   @@@@@   @@@@@@  @@  @@ @@  &&&&&&&&
- * @@   @@@ @@       @@     @@ @@    @@ @@    @@ @@ @@   @@      @@      @@  @@ @@ &&&&&&&&&&
- * @@@@@@@  @@@@@@@@ @@     @@  @@@@@@   @@@@@@  @@  @@  @@@@@@@ @@@@@@  @@  @@ @@     &&
- * @@@@@@   @@@@@@@  @@     @@   @@@@     @@@@   @@  @@@ @@@@@@  @@@@@@@ @@    @@@     &&
- *
- * Demo Green Token for R&D firm
- * - Total Supply
- *      1 quadrillion Tokens
- * - Token name & symbol
- *      DemoGreen, "DMG"
- *
- * - Token distribution
- *      10% for Company Foundations
- *      5% for Partnership and Licensing Agent
- *      5% for Green and Clean Environment Reward
- *      5% for Airdrop
- *      5% for NFT Marketplace
- *      
- *      70% for Sale
- *      30% for Presale
- *      40% for Public Sale over Pancaleswap.
- *
- * - Great Tokenomics
- *      5% of each transaction will be distributed to all token holders
- *      5% of each transaction will be used for buyback
- *      5% of each transaction will be used for Green & Clean Environment reference
- */
+    /**
+    * &&&&&&   &&&&&&&  &&&& &&&&   &&&&     &&&&   &&&&&   &&&&&&  &&&&&&& &&&    &&     &&
+    * &&&&&&&  &&&&&&&& &&&&&&&&&  &&&&&&   &&&&&&  &&&&&&  &&&&&&& &&&&&&  && &&  &&    &&&
+    * &&   &&& &&       && &&& && &&    && &&       &&   && &&      &&      && &&  &&    &&&&&
+    * &&    && &&&&&&   &&  &  && &&    && &&  &&&& &&&&&&  &&&&&&  &&&&&   &&  && &&  &&&&&&
+    * @@    @@ @@@@@    @@     @@ @@    @@ @@  @@@@ @@@@@   @@@@@   @@@@@@  @@  @@ @@  &&&&&&&&
+    * @@   @@@ @@       @@     @@ @@    @@ @@    @@ @@ @@   @@      @@      @@  @@ @@ &&&&&&&&&&
+    * @@@@@@@  @@@@@@@@ @@     @@  @@@@@@   @@@@@@  @@  @@  @@@@@@@ @@@@@@  @@  @@ @@     &&
+    * @@@@@@   @@@@@@@  @@     @@   @@@@     @@@@   @@  @@@ @@@@@@  @@@@@@@ @@    @@@     &&
+    *
+    * Demo Green Token for R&D firm
+    * - Total Supply
+    *      1 quadrillion Tokens
+    * - Token name & symbol
+    *      DemoGreen, "DMG"
+    *
+    * - Token distribution
+    *      10% for Company Foundations
+    *      5% for Partnership and Licensing Agent
+    *      5% for Green and Clean Environment Reward
+    *      5% for Airdrop
+    *      5% for NFT Marketplace
+    *      
+    *      70% for Sale
+    *      30% for Presale
+    *      40% for Public Sale over Pancaleswap.
+    *
+    * - Great Tokenomics
+    *      5% of each transaction will be distributed to all token holders
+    *      5% of each transaction will be used for buyback
+    *      5% of each transaction will be used for Green & Clean Environment reference
+    */
 
-pragma solidity ^0.8.7;
+    pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/utils/Context.sol";
-import "@openzeppelin/contracts/utils/Address.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "@openzeppelin/contracts/interfaces/IERC20.sol";
-import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
-import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
-import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol";
-import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
-import "./Ownable.sol";
+    import "@openzeppelin/contracts/utils/Context.sol";
+    import "@openzeppelin/contracts/utils/Address.sol";
+    import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+    import "@openzeppelin/contracts/interfaces/IERC20.sol";
+    import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
+    import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
+    import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol";
+    import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
+    import "./Ownable.sol";
 
-// DemoGreen Contract
+    // DemoGreen Contract
 contract DemoGreen is Context, IERC20, Ownable {
-  using SafeMath for uint256;
-  using Address for address;
+    using SafeMath for uint256;
+    using Address for address;
 
-  // Green & Clean Environment Reward Address
-  address payable public rewardAddress = payable(0x1b0155e319d0c77DA13A1644b1d200794c18Ec87);
-  // Contest Address
-  address payable public contestAddress = payable(0x4c4b60d86CFfBF2eFaF98C927359525c0406BA3F);
-  // Partnership and Licensing Agent Address
-  address payable public partnershipAddress = payable(0x3eD588aC5310e0D16bf98632Ea7a8b472B9CA6DC);
-  // Company Foundation
-  address payable public companyAddress = payable(0x178077A67422168f0Ba36fF73638B00AE86d083e);
-  // Airdrop Address
-  address payable public airdropAddress = payable(0xB5150f00795Ac7C887D00a19BE8F73b89025F983);
-  // Marketplace Address
-  address payable public marketplaceAddress = payable(0x399ABE01fA03Ec00417C05193D7bC6C22E64C51E);
-  // Burn Address
-  address public immutable deadAddress = 0x000000000000000000000000000000000000dEaD;
+    // Green & Clean Environment Reward Address
+    address payable public rewardAddress = payable(0x1b0155e319d0c77DA13A1644b1d200794c18Ec87);
+    // Contest Address
+    address payable public contestAddress = payable(0x4c4b60d86CFfBF2eFaF98C927359525c0406BA3F);
+    // Partnership and Licensing Agent Address
+    address payable public partnershipAddress = payable(0x3eD588aC5310e0D16bf98632Ea7a8b472B9CA6DC);
+    // Company Foundation
+    address payable public companyAddress = payable(0x178077A67422168f0Ba36fF73638B00AE86d083e);
+    // Airdrop Address
+    address payable public airdropAddress = payable(0xB5150f00795Ac7C887D00a19BE8F73b89025F983);
+    // Marketplace Address
+    address payable public marketplaceAddress = payable(0x399ABE01fA03Ec00417C05193D7bC6C22E64C51E);
+    // Burn Address
+    address public immutable deadAddress = 0x000000000000000000000000000000000000dEaD;
 
-  mapping (address => uint256) private _rOwned;
-  mapping (address => uint256) private _tOwned;
-  mapping (address => mapping (address => uint256)) private _allowances;
+    mapping (address => uint256) private _rOwned;
+    mapping (address => uint256) private _tOwned;
+    mapping (address => mapping (address => uint256)) private _allowances;
 
-  mapping (address => bool) private _isExcludedFromFee;
-  mapping (address => bool) private _isExcluded;
-  address[] private _excluded;
+    mapping (address => bool) private _isExcludedFromFee;
+    mapping (address => bool) private _isExcluded;
+    address[] private _excluded;
 
-  uint256 private constant MAX = ~uint256(0);
-  uint256 private _tTotal = 1 * 10**15 * 10**9;
-  uint256 private _rTotal = (MAX - (MAX % _tTotal));
-  uint256 private _tFeeTotal;
+    uint256 private constant MAX = ~uint256(0);
+    uint256 private _tTotal = 1 * 10**15 * 10**9;
+    uint256 private _rTotal = (MAX - (MAX % _tTotal));
+    uint256 private _tFeeTotal;
 
     // Token Name & Token Symbol & Token Decimals
     string private _name = "DemoGreen";
@@ -402,9 +402,9 @@ contract DemoGreen is Context, IERC20, Ownable {
 
     function buyBackTokens(uint256 amount) private lockTheSwap {
 
-      if (amount > 0) {
+    if (amount > 0) {
         swapETHForTokens(amount);
-      }
+    }
     }
 
     function swapTokensForEth(uint256 tokenAmount) private {
@@ -494,7 +494,7 @@ contract DemoGreen is Context, IERC20, Ownable {
     function _transferToExcluded(address sender, address recipient, uint256 tAmount) private {
 
         (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 tSwap) = _getValues(tAmount);
-	    _rOwned[sender] = _rOwned[sender].sub(rAmount);
+        _rOwned[sender] = _rOwned[sender].sub(rAmount);
         _tOwned[recipient] = _tOwned[recipient].add(tTransferAmount);
         _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);
         _takeSwap(tSwap);
@@ -505,7 +505,7 @@ contract DemoGreen is Context, IERC20, Ownable {
     function _transferFromExcluded(address sender, address recipient, uint256 tAmount) private {
 
         (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 tSwap) = _getValues(tAmount);
-    	_tOwned[sender] = _tOwned[sender].sub(tAmount);
+        _tOwned[sender] = _tOwned[sender].sub(tAmount);
         _rOwned[sender] = _rOwned[sender].sub(rAmount);
         _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);
         _takeSwap(tSwap);
@@ -516,7 +516,7 @@ contract DemoGreen is Context, IERC20, Ownable {
     function _transferBothExcluded(address sender, address recipient, uint256 tAmount) private {
 
         (uint256 rAmount, uint256 rTransferAmount, uint256 rFee, uint256 tTransferAmount, uint256 tFee, uint256 tSwap) = _getValues(tAmount);
-    	_tOwned[sender] = _tOwned[sender].sub(tAmount);
+        _tOwned[sender] = _tOwned[sender].sub(tAmount);
         _rOwned[sender] = _rOwned[sender].sub(rAmount);
         _tOwned[recipient] = _tOwned[recipient].add(tTransferAmount);
         _rOwned[recipient] = _rOwned[recipient].add(rTransferAmount);
@@ -752,12 +752,12 @@ contract DemoGreen is Context, IERC20, Ownable {
 
     function prepareForPreSale() external onlyOwner() {
 
-      setSwapAndLiquifyEnabled(false);
-      _taxFee = 0;
-      _swapFee = 0;
-	    _previousTaxFee = 0;
-    	_previousSwapFee = 0;
-      _maxTxAmount = 1 * 10**15 * 10**9;
+    setSwapAndLiquifyEnabled(false);
+    _taxFee = 0;
+    _swapFee = 0;
+        _previousTaxFee = 0;
+        _previousSwapFee = 0;
+    _maxTxAmount = 1 * 10**15 * 10**9;
     }
 
     function afterPreSale() external onlyOwner() {
