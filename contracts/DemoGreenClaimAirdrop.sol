@@ -29,23 +29,31 @@ contract AirDrop is Context, Ownable {
   mapping(address => uint256) private _claimAmounts;
   
   uint256 private _weiRaised;
+
+  uint256 private _endContest = 0;
   bool private _claimActivated;
 
   modifier claimActive() {
     require(_claimActivated == true, "AIRDROP: Claim has not been activated!");
+    require(_endContest > 0 && block.timestamp < _endContest , "AIRDROP: Claim has not been activated!");
+
     _;
   }
 
   modifier claimNotActive() {
     require(_claimActivated == false, "AIRDROP: Claim has been activated!");
+    require(_endContest < block.timestamp, "AIRDROP: Claim has been expired!");
+
     _;
   }
 
-  constructor (address wallet) {
+  constructor (address wallet, uint256 endContest) {
     require(wallet != address(0), "AIRDROP: Wallet address can't be a zero address!");
+    require(endContest > 0, "AIRDROP: End contest can't be zero");
 
     _rewardWallet = wallet;
     _claimActivated = false;
+    _endContest = endContest;
   }
 
   function initContest(address[] memory attenders) public onlyOwner claimNotActive {
@@ -63,7 +71,7 @@ contract AirDrop is Context, Ownable {
     require(attenders.length > 0, "AIRDROP: No attenders for this contest!");
 
     uint256 attenderCounts = attenders.length;
-    uint256 airdropAmount = address(this).balance.mul(attenderCounts);
+    uint256 airdropAmount = address(this).balance.div(attenderCounts);
     for (uint256 i = 0; i < attenderCounts; i++) {
       _claimAmounts[attenders[i]] = airdropAmount;
 
@@ -86,10 +94,15 @@ contract AirDrop is Context, Ownable {
     }
   }
 
-  function _withdraw(address _address, uint256 _amount) private {
+  function stopAirDrop() public claimActive {
+    _endContest = 0;
+    _claimActivated = false;
+  }
+  function _withdraw(address _address, uint256 _amount) private claimActive {
     (bool success, ) = _address.call{value: _amount}("");
 
     require(success, "WITHDRAW: Transfer failed.");
     _claimAmounts[_address] = 0;
   }
+
 }
