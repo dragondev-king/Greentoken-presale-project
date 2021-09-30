@@ -35,7 +35,7 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
 
-contract Public_PreSale is ReentrancyGuard, Context, Ownable {
+contract DemoGreenPresale is ReentrancyGuard, Context, Ownable {
 
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
