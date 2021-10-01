@@ -8,12 +8,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --mode development",
-    "dev": "nodemon app.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/CoryITpro/Greentoken-presale-project.git"
+    "start": "react-scripts start"
   },
   "keywords": [
     "Truffle",
@@ -21,11 +16,8 @@
   ],
   "author": "coryitpro@gmail.com, jeus0430.tarzan@gmail.com",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/CoryITpro/Greentoken-presale-project/issues"
-  },
-  "homepage": "https://github.com/CoryITpro/Greentoken-presale-project#readme",
   "dependencies": {
+    "@metamask/detect-provider": "^1.2.0",
     "@openzeppelin/contracts": "^4.3.2",
     "@truffle/hdwallet-provider": "^1.5.0",
     "@uniswap/v2-core": "^1.0.1",
@@ -34,7 +26,7 @@
     "ethers": "^5.4.7",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-router-dom": "^5.3.0",
+    "react-scripts": "4.0.3",
     "solc": "^0.8.8",
     "truffle-plugin-verify": "^0.5.15"
   },
@@ -49,16 +41,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@babel/core": "^7.15.5",
-    "@babel/preset-react": "^7.14.5",
-    "babel-loader": "^8.2.2",
-    "css-loader": "^6.3.0",
-    "html-loader": "^2.1.2",
-    "sass-loader": "^12.1.0",
-    "style-loader": "^3.3.0",
-    "webpack": "^5.56.0",
-    "webpack-cli": "^4.8.0"
   }
 }
