@@ -1,12 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "containers/app";
-import "styles/styles.css";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
-console.log(123);
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById("root")
+import App from "./App.js";
+import "./styles.scss";
+
+const appRouting = (
+  <Router>
+    <Switch>
+      <Route exact path="/" component={App} />
+    </Switch>
+  </Router>
 );
+
+ReactDOM.render(appRouting, document.getElementById("root"));

@@ -1,51 +1,51 @@
-    // SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 
-    /**
-    * &&&&&&   &&&&&&&  &&&& &&&&   &&&&     &&&&   &&&&&   &&&&&&  &&&&&&& &&&    &&     &&
-    * &&&&&&&  &&&&&&&& &&&&&&&&&  &&&&&&   &&&&&&  &&&&&&  &&&&&&& &&&&&&  && &&  &&    &&&
-    * &&   &&& &&       && &&& && &&    && &&       &&   && &&      &&      && &&  &&    &&&&&
-    * &&    && &&&&&&   &&  &  && &&    && &&  &&&& &&&&&&  &&&&&&  &&&&&   &&  && &&  &&&&&&
-    * @@    @@ @@@@@    @@     @@ @@    @@ @@  @@@@ @@@@@   @@@@@   @@@@@@  @@  @@ @@  &&&&&&&&
-    * @@   @@@ @@       @@     @@ @@    @@ @@    @@ @@ @@   @@      @@      @@  @@ @@ &&&&&&&&&&
-    * @@@@@@@  @@@@@@@@ @@     @@  @@@@@@   @@@@@@  @@  @@  @@@@@@@ @@@@@@  @@  @@ @@     &&
-    * @@@@@@   @@@@@@@  @@     @@   @@@@     @@@@   @@  @@@ @@@@@@  @@@@@@@ @@    @@@     &&
-    *
-    * Demo Green Token for R&D firm
-    * - Total Supply
-    *      1 quadrillion Tokens
-    * - Token name & symbol
-    *      DemoGreen, "DMG"
-    *
-    * - Token distribution
-    *      10% for Company Foundations
-    *      5% for Partnership and Licensing Agent
-    *      5% for Green and Clean Environment Reward
-    *      5% for Airdrop
-    *      5% for NFT Marketplace
-    *      
-    *      70% for Sale
-    *      30% for Presale
-    *      40% for Public Sale over Pancaleswap.
-    *
-    * - Great Tokenomics
-    *      5% of each transaction will be distributed to all token holders
-    *      5% of each transaction will be used for buyback
-    *      5% of each transaction will be used for Green & Clean Environment reference
-    */
+/**
+* &&&&&&   &&&&&&&  &&&& &&&&   &&&&     &&&&   &&&&&   &&&&&&  &&&&&&& &&&    &&     &&
+* &&&&&&&  &&&&&&&& &&&&&&&&&  &&&&&&   &&&&&&  &&&&&&  &&&&&&& &&&&&&  && &&  &&    &&&
+* &&   &&& &&       && &&& && &&    && &&       &&   && &&      &&      && &&  &&    &&&&&
+* &&    && &&&&&&   &&  &  && &&    && &&  &&&& &&&&&&  &&&&&&  &&&&&   &&  && &&  &&&&&&
+* @@    @@ @@@@@    @@     @@ @@    @@ @@  @@@@ @@@@@   @@@@@   @@@@@@  @@  @@ @@  &&&&&&&&
+* @@   @@@ @@       @@     @@ @@    @@ @@    @@ @@ @@   @@      @@      @@  @@ @@ &&&&&&&&&&
+* @@@@@@@  @@@@@@@@ @@     @@  @@@@@@   @@@@@@  @@  @@  @@@@@@@ @@@@@@  @@  @@ @@     &&
+* @@@@@@   @@@@@@@  @@     @@   @@@@     @@@@   @@  @@@ @@@@@@  @@@@@@@ @@    @@@     &&
+*
+* Demo Green Token for R&D firm
+* - Total Supply
+*      1 quadrillion Tokens
+* - Token name & symbol
+*      DemoGreen, "DMG"
+*
+* - Token distribution
+*      10% for Company Foundations
+*      5% for Partnership and Licensing Agent
+*      5% for Green and Clean Environment Reward
+*      5% for Airdrop
+*      5% for NFT Marketplace
+*      
+*      70% for Sale
+*      30% for Presale
+*      40% for Public Sale over Pancaleswap.
+*
+* - Great Tokenomics
+*      5% of each transaction will be distributed to all token holders
+*      5% of each transaction will be used for buyback
+*      5% of each transaction will be used for Green & Clean Environment reference
+*/
 
-    pragma solidity ^0.8.7;
+pragma solidity ^0.8.7;
 
-    import "@openzeppelin/contracts/utils/Context.sol";
-    import "@openzeppelin/contracts/utils/Address.sol";
-    import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-    import "@openzeppelin/contracts/interfaces/IERC20.sol";
-    import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
-    import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
-    import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol";
-    import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
-    import "./OwnableE.sol";
+import "@openzeppelin/contracts/utils/Context.sol";
+import "@openzeppelin/contracts/utils/Address.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/interfaces/IERC20.sol";
+import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol";
+import "@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol";
+import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol";
+import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
+import "./OwnableE.sol";
 
-    // DemoGreen Contract
+// DemoGreen Contract
 contract DemoGreen is Context, IERC20, OwnableE {
     using SafeMath for uint256;
     using Address for address;
