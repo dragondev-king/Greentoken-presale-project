@@ -225,24 +225,7 @@ const App = () => {
     }
   };
 
-  return (
-    <DashboardComponent
-      error={error}
-      maxMint={maxMint}
-      mintCount={mintCount}
-      metadatas={metadatas}
-      maxSupply={maxSupply}
-      mintLoading={mintLoading}
-      walletAddress={walletAddress}
-      soldOutCounts={soldOutCounts}
-      collapseExpanded={collapseExpanded}
-      onMintHandler={onMintHandler}
-      onConnectWalletHandler={onConnectWalletHandler}
-      onMintCountChangeHandler={onMintCountChangeHandler}
-      onCollapseExpandHandler={onCollapseExpandHandler}
-      onAlertClickHandler={onAlertClickHandler}
-    />
-  );
+  return <div>123123s</div>;
 };
 
 export default App;

@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import contractABI from "/build/contracts/AirDrop.json";
+import contractABI from "../abis/AirDrop.json";
 
 require("dotenv").config();
 
