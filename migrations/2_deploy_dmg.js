@@ -1,5 +1,5 @@
 const DemoGreen = artifacts.require("DemoGreen");
 
-module.exports = function (deployer) {
-  deployer.deploy(DemoGreen);
+module.exports = async function (deployer) {
+  await deployer.deploy(DemoGreen);
 };
