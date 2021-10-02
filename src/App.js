@@ -13,7 +13,7 @@ const App = () => {
   const [addresses, setAddresses] = useState([]);
   const [attenders, setAttenders] = useState([]);
   const [address, setAddress] = useState("");
-  const [ratio, setRatio] = useState("");
+  const [ratio, setRatio] = useState(1);
   const [airDrop, setAirDrop] = useState();
 
   useEffect(() => {
@@ -91,6 +91,8 @@ const App = () => {
         ratio,
       },
     ]);
+    setRatio(1);
+    setAddress("");
   };
 
   const generateTable = () =>
@@ -122,8 +124,18 @@ const App = () => {
     <div className="app flex flex-column">
       <div className="app-attenders">{generateTable()}</div>
       <div className="app-inputs">
-        <input name="address" type="text" onChange={onChangeHandler} />
-        <input name="ratio" type="text" onChange={onChangeHandler} />
+        <input
+          value={address}
+          name="address"
+          type="text"
+          onChange={onChangeHandler}
+        />
+        <input
+          value={ratio}
+          name="ratio"
+          type="number"
+          onChange={onChangeHandler}
+        />
         <button onClick={onAddHandler}>Add</button>
       </div>
       <div className="app-controllers">
