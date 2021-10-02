@@ -1,11 +1,10 @@
 import "./App.scss";
 
 import { useState, useEffect } from "react";
-import { ethers } from "ethers";
-import axios from "axios";
 
 import { getContractWithSigner } from "./helpers/contract";
 import { connectWallet, getCurrentWalletConnected } from "./helpers/wallet";
+require("dotenv").config();
 
 const App = () => {
   const [walletAddress, setWalletAddress] = useState("");
@@ -133,7 +132,12 @@ const App = () => {
     );
 
     try {
-      const result = await airDrop.initContest(addressArr, ratioArr);
+      console.log(parseInt(process.env.REACT_APP_END_AIRDROP_AT));
+      const result = await airDrop.initContest(
+        addressArr,
+        ratioArr,
+        parseInt(process.env.REACT_APP_END_AIRDROP_AT)
+      );
       console.log("result", result);
     } catch (error) {
       console.log(error);
