@@ -46,7 +46,7 @@ import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
 import "./OwnableE.sol";
 
 // DemoGreen Contract
-contract DemoGreen is Context, IERC20, Ownable {
+contract DemoGreen is Context, IERC20, OwnableE {
   using SafeMath for uint256;
   using Address for address;
 
