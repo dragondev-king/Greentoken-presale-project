@@ -23,6 +23,7 @@ contract AirDrop is Context, Ownable {
   using SafeMath for uint256;
   using Address for address;
   event Event1(address[] addresses, uint256[] ratios); 
+  event Event0(uint256 length, uint256 length1);
   event Event2(uint256 totalRatios);
   event Event3(uint256 totalAmount);
   event Event4(uint256 i, uint256 tmpAmount);
@@ -58,21 +59,21 @@ contract AirDrop is Context, Ownable {
     _;
   }
 
-  constructor (address wallet, uint256 endContest) {
+  constructor (address wallet) {
     require(wallet != address(0), "AIRDROP: Wallet address can't be a zero address!");
-    require(endContest > 0, "AIRDROP: End contest can't be zero");
 
     _rewardWallet = wallet;
     _claimActivated = false;
-    _endContest = endContest;
   }
 
-  function initContest(address[] memory addresses, uint256[] memory ratios) public onlyOwner claimNotActive {
+  function initContest(address[] memory addresses, uint256[] memory ratios, uint256 endContest) public onlyOwner claimNotActive {
+    require(_endContest < block.timestamp, "AIRDROP: Claim has been started!");
     emit Event1(addresses, ratios);
-    require(addresses.length == ratios.length, "AirDROP: attender addresses and ratios arrays should have the same length");
+    emit Event0(addresses.length, ratios.length);
+    require(addresses.length == ratios.length, "AIRDROP: attender addresses and ratios arrays should have the same length");
     require(address(this).balance > 0, "AIRDROP: The contract has no money!");
     require(addresses.length > 0, "AIRDROP: No attenders for this contest!");
-
+  
     uint256 totalRatios = 0;
     uint256 i = 0;
 
@@ -94,15 +95,19 @@ contract AirDrop is Context, Ownable {
       }
       emit Event4(i, tmpAmount);
       realTotalAmount = tmpAmount + realTotalAmount;
-      _attenders[addresses[i]] = Attender(addresses[i], ratios[i], tmpAmount, true);
+
+      Attender memory attender;
+      attender.addr = addresses[i];
+      attender.ratio = ratios[i];
+      attender.amount = tmpAmount;
+      attender.flag = true;
+      _attenders[addresses[i]] = attender;
       _addresses[i] = addresses[i];
     }
     emit Event5(_addresses);
-    if (totalAmount - realTotalAmount > 0) {
-      _withdraw(_rewardWallet, totalAmount - realTotalAmount);
-    }
 
     _claimActivated = true;
+    _endContest = endContest;
   }
 
   function claimBNBs() public payable claimActive {
