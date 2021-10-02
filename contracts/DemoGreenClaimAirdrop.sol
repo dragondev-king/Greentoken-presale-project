@@ -67,44 +67,40 @@ contract AirDrop is Context, Ownable {
   }
 
   function initContest(address[] memory addresses, uint256[] memory ratios, uint256 endContest) public onlyOwner claimNotActive {
-    require(_endContest < block.timestamp, "AIRDROP: Claim has been started!");
-    emit Event1(addresses, ratios);
-    emit Event0(addresses.length, ratios.length);
     require(addresses.length == ratios.length, "AIRDROP: attender addresses and ratios arrays should have the same length");
     require(address(this).balance > 0, "AIRDROP: The contract has no money!");
     require(addresses.length > 0, "AIRDROP: No attenders for this contest!");
+    require(_endContest < block.timestamp, "AIRDROP: Claim has been started!");
   
     uint256 totalRatios = 0;
-    uint256 i = 0;
 
-    for (i = 0; i < addresses.length; i++) {
+    for (uint256 i = 0; i < addresses.length; i++) {
       require(addresses[i] != address(0), "AIRDROP: Attender Address can't be a zero address!");
-      totalRatios = ratios[i] + totalRatios;
+      totalRatios = totalRatios + ratios[i];
     }
-    emit Event2(totalRatios);
+
     uint256 totalAmount = address(this).balance;
-    emit Event3(totalAmount);
     uint256 tmpAmount = 0;
     uint256 realTotalAmount = 0;
     
-    for (i = 0; i < addresses.length; i++) {
-      if (i != addresses.length - 1) {
+    for (uint256 i = 0; i < addresses.length; i++) {
+      if (i != addresses.length.sub(1)) {
         tmpAmount = totalAmount.mul(ratios[i]).div(totalRatios);
       } else {
-        tmpAmount = totalAmount - realTotalAmount;
+        tmpAmount = totalAmount.sub(realTotalAmount);
       }
-      emit Event4(i, tmpAmount);
-      realTotalAmount = tmpAmount + realTotalAmount;
+
+      realTotalAmount = realTotalAmount.add(tmpAmount);
 
       Attender memory attender;
       attender.addr = addresses[i];
       attender.ratio = ratios[i];
       attender.amount = tmpAmount;
       attender.flag = true;
+
       _attenders[addresses[i]] = attender;
       _addresses[i] = addresses[i];
     }
-    emit Event5(_addresses);
 
     _claimActivated = true;
     _endContest = endContest;
