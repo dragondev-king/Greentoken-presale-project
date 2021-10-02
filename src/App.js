@@ -30,6 +30,27 @@ const App = () => {
         const value = getContractWithSigner();
         console.log(value);
         setAirDrop(value);
+        value.on(
+          "Event1(address[] addresses, uint256[] ratios)",
+          (param1, param2) => {
+            console.log("Event1", param1, param2);
+          }
+        );
+        value.on("Event2(uint256 totalRatios)", (param1) => {
+          console.log("Event1", param1);
+        });
+        value.on("Event3(uint256 totalAmount)", (param1) => {
+          console.log("Event1", param1);
+        });
+        value.on("Event4(uint256 i, uint256 tmpAmount)", (param1, param2) => {
+          console.log("Event1", param1, param2);
+        });
+        value.on("Event5(address[] _addresses)", (param1) => {
+          console.log("Event1", param1);
+        });
+        value.on("Event6(bool success)", (param1) => {
+          console.log("Event1", param1);
+        });
       }
     };
 
@@ -111,13 +132,12 @@ const App = () => {
       parseInt(val.ratio)
     );
 
-    console.log(addressArr);
-    console.log(ratioArr);
-    console.log(airDrop.address);
-
-    const result = await airDrop.initContest(addressArr, ratioArr);
-
-    console.log("con", result);
+    try {
+      const result = await airDrop.initContest(addressArr, ratioArr);
+      console.log("result", result);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const claimBNBs = async () => {

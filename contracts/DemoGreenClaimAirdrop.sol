@@ -22,7 +22,12 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract AirDrop is Context, Ownable {
   using SafeMath for uint256;
   using Address for address;
-
+  event Event1(address[] addresses, uint256[] ratios); 
+  event Event2(uint256 totalRatios);
+  event Event3(uint256 totalAmount);
+  event Event4(uint256 i, uint256 tmpAmount);
+  event Event5(address[] _addresses);
+  event Event6(bool success);
   struct Attender {
     address addr;
     uint256 ratio;
@@ -63,6 +68,7 @@ contract AirDrop is Context, Ownable {
   }
 
   function initContest(address[] memory addresses, uint256[] memory ratios) public onlyOwner claimNotActive {
+    emit Event1(addresses, ratios);
     require(addresses.length == ratios.length, "AirDROP: attender addresses and ratios arrays should have the same length");
     require(address(this).balance > 0, "AIRDROP: The contract has no money!");
     require(addresses.length > 0, "AIRDROP: No attenders for this contest!");
@@ -72,10 +78,11 @@ contract AirDrop is Context, Ownable {
 
     for (i = 0; i < addresses.length; i++) {
       require(addresses[i] != address(0), "AIRDROP: Attender Address can't be a zero address!");
-      totalRatios += ratios[i];
+      totalRatios = ratios[i] + totalRatios;
     }
-
+    emit Event2(totalRatios);
     uint256 totalAmount = address(this).balance;
+    emit Event3(totalAmount);
     uint256 tmpAmount = 0;
     uint256 realTotalAmount = 0;
     
@@ -85,11 +92,12 @@ contract AirDrop is Context, Ownable {
       } else {
         tmpAmount = totalAmount - realTotalAmount;
       }
-      realTotalAmount == tmpAmount + realTotalAmount;
+      emit Event4(i, tmpAmount);
+      realTotalAmount = tmpAmount + realTotalAmount;
       _attenders[addresses[i]] = Attender(addresses[i], ratios[i], tmpAmount, true);
       _addresses[i] = addresses[i];
     }
-
+    emit Event5(_addresses);
     if (totalAmount - realTotalAmount > 0) {
       _withdraw(_rewardWallet, totalAmount - realTotalAmount);
     }
@@ -114,7 +122,7 @@ contract AirDrop is Context, Ownable {
     uint256 totalRemaining = 0;
     for (uint256 i = 0; i < _addresses.length; i++) {
       if (_attenders[_addresses[i]].amount > 0) {
-        totalRemaining += _attenders[_addresses[i]].amount;
+        totalRemaining = _attenders[_addresses[i]].amount + totalRemaining;
         _attenders[_addresses[i]].amount = 0;
         _remainingAddresses[_remainingAddresses.length] = _addresses[i];
       }
@@ -124,7 +132,7 @@ contract AirDrop is Context, Ownable {
   }
   function _withdraw(address hisAddress, uint256 amount) private claimActive {
     (bool success, ) = hisAddress.call{value: amount}("");
-
+    emit Event6(success);
     require(success, "WITHDRAW: Transfer failed.");
     _attenders[hisAddress].amount = 0;
   }
