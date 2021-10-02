@@ -3,6 +3,8 @@
 
 #dependancies
 node_modules
+build
+
 
 #package
-package-lock.json
+package-lock.json*

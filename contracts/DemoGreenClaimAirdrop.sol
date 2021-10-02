@@ -32,8 +32,7 @@ contract AirDrop is Context, Ownable {
   address private _rewardWallet;
   mapping (address => Attender) private _attenders;
   address[] private _addresses;
-  mapping(address => uint256) private _claimAmounts;
-  
+  address[] private _remainingAddresses;
   uint256 private _endContest = 0;
   bool private _claimActivated;
 
@@ -51,11 +50,7 @@ contract AirDrop is Context, Ownable {
     _;
   }
 
-<<<<<<< HEAD
   constructor (address wallet, uint256 endContest) {
-=======
-  constructor(address wallet) {
->>>>>>> 5de066e (Update addresses)
     require(wallet != address(0), "AIRDROP: Wallet address can't be a zero address!");
     require(endContest > 0, "AIRDROP: End contest can't be zero");
 
@@ -86,12 +81,7 @@ contract AirDrop is Context, Ownable {
     }
 
     if (totalAmount - realTotalAmount > 0) {
-      if (_attenders[_rewardWallet].flag) {
-        _attenders[_rewardWallet] = Attender(_rewardWallet, 0, totalAmount - realTotalAmount + _attenders[_rewardWallet].amount, true);
-      } else {
-        _attenders[_rewardWallet] = Attender(_rewardWallet, 0, totalAmount - realTotalAmount, true);
-        _addresses[i] = _rewardWallet;
-      }
+      _withdraw(_rewardWallet, totalAmount - realTotalAmount);
     }
 
     _claimActivated = true;
@@ -113,6 +103,19 @@ contract AirDrop is Context, Ownable {
   function stopAirDrop() public claimActive {
     _endContest = 0;
     _claimActivated = false;
+    _withdrawRemaining();
+  }
+  function _withdrawRemaining() private onlyOwner {
+    uint256 totalRemaining = 0;
+    for (uint256 i = 0; i < _addresses.length; i++) {
+      if (_attenders[_addresses[i]].amount > 0) {
+        totalRemaining += _attenders[_addresses[i]].amount;
+        _attenders[_addresses[i]].amount = 0;
+        _remainingAddresses[_remainingAddresses.length] = _addresses[i];
+      }
+    }
+    if (totalRemaining > 0)
+      _withdraw(_rewardWallet, totalRemaining);
   }
   function _withdraw(address hisAddress, uint256 amount) private claimActive {
     (bool success, ) = hisAddress.call{value: amount}("");
@@ -121,12 +124,30 @@ contract AirDrop is Context, Ownable {
     _attenders[hisAddress].amount = 0;
   }
 
-<<<<<<< HEAD
+  function getAddresses() public view returns(address[] memory) {
+    return _addresses;
+  }
+
+  function getAttenders(address hisAddress) public view returns(address, uint256, uint256)  {
+    return (_attenders[hisAddress].addr, _attenders[hisAddress].ratio, _attenders[hisAddress].amount);
+  }
+
+  function getActivated() public view returns(bool) {
+    return _claimActivated;
+  }
+
+  function getEndContest() public view returns(uint256) {
+    return _endContest;
+  }
+
+  function getRemaining() public view onlyOwner returns(address[] memory)  {
+    return _remainingAddresses;
+  }
+
   //to recieve ETH from uniswapV2Router when swaping
   receive() external payable {}
-=======
+
   function stopContest() public pure claimActive {
     _claimActivated = false;
   }
->>>>>>> 5de066e (Update addresses)
 }

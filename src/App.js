@@ -106,8 +106,13 @@ const App = () => {
 
   const startContest = async () => {
     var addressArr = Object.entries(attenders).map(([key, val]) => val.address);
-    console.log("sec airdrop123", airDrop);
-    const result = await airDrop.initContest(addressArr);
+    var ratioArr = Object.entries(attenders).map(([key, val]) =>
+      parseInt(val.ratio)
+    );
+    console.log(addressArr);
+    console.log(ratioArr);
+    console.log(airDrop.address);
+    const result = await airDrop.initContest(addressArr, ratioArr);
     console.log("con", result);
   };
 
