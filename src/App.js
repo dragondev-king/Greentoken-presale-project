@@ -28,6 +28,7 @@ const App = () => {
         onConnectWalletHandler();
 
         const value = getContractWithSigner();
+        console.log(value);
         setAirDrop(value);
       }
     };
@@ -109,10 +110,13 @@ const App = () => {
     var ratioArr = Object.entries(attenders).map(([key, val]) =>
       parseInt(val.ratio)
     );
+
     console.log(addressArr);
     console.log(ratioArr);
     console.log(airDrop.address);
+
     const result = await airDrop.initContest(addressArr, ratioArr);
+
     console.log("con", result);
   };
 
