@@ -1,5 +1,4 @@
 import detectEthereumProvider from "@metamask/detect-provider";
-
 require("dotenv").config();
 
 export const connectWallet = async () => {
@@ -10,8 +9,9 @@ export const connectWallet = async () => {
       const walletChainId = await provider.request({
         method: "eth_chainId",
       });
-
-      if (parseInt(walletChainId) === parseInt(process.env.CHAIN_ID)) {
+      if (
+        parseInt(walletChainId) === parseInt(process.env.REACT_APP_CHAIN_ID)
+      ) {
         const addressArray = await provider.request({
           method: "eth_requestAccounts",
         });
@@ -30,7 +30,7 @@ export const connectWallet = async () => {
       } else {
         provider.request({
           method: "wallet_switchEthereumChain",
-          params: [{ chainId: process.env.CHAIN_ID }],
+          params: [{ chainId: process.env.REACT_APP_CHAIN_ID }],
         });
 
         return {
@@ -62,13 +62,18 @@ export const getCurrentWalletConnected = async () => {
       const addressArray = await provider.request({
         method: "eth_accounts",
       });
+
       const walletChainId = await provider.request({
         method: "eth_chainId",
       });
-      if (addressArray.length && walletChainId === process.env.CHAIN_ID) {
+
+      if (
+        addressArray.length &&
+        walletChainId === process.env.REACT_APP_CHAIN_ID
+      ) {
         return {
           address: addressArray[0],
-          status: "Get your CryptoAthletes pack, 0.05ETH",
+          status: "Connected",
         };
       } else {
         return {
