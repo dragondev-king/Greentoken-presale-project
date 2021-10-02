@@ -22,6 +22,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract AirDrop is Context, Ownable {
   using SafeMath for uint256;
   using Address for address;
+
   struct Attender {
     address addr;
     uint256 ratio;
@@ -31,8 +32,10 @@ contract AirDrop is Context, Ownable {
 
   address private _rewardWallet;
   mapping (address => Attender) private _attenders;
+
   address[] private _addresses;
   address[] private _remainingAddresses;
+
   uint256 private _endContest = 0;
   bool private _claimActivated;
 
@@ -63,8 +66,10 @@ contract AirDrop is Context, Ownable {
     require(addresses.length == ratios.length, "AirDROP: attender addresses and ratios arrays should have the same length");
     require(address(this).balance > 0, "AIRDROP: The contract has no money!");
     require(addresses.length > 0, "AIRDROP: No attenders for this contest!");
+
     uint256 totalRatios = 0;
     uint256 i = 0;
+
     for (i = 0; i < addresses.length; i++) {
       require(addresses[i] != address(0), "AIRDROP: Attender Address can't be a zero address!");
       totalRatios += ratios[i];
@@ -73,9 +78,14 @@ contract AirDrop is Context, Ownable {
     uint256 totalAmount = address(this).balance;
     uint256 tmpAmount = 0;
     uint256 realTotalAmount = 0;
+    
     for (i = 0; i < addresses.length; i++) {
-      tmpAmount = totalAmount.mul(ratios[i]).div(totalRatios);
-      realTotalAmount += tmpAmount;
+      if (i != addresses.length - 1) {
+        tmpAmount = totalAmount.mul(ratios[i]).div(totalRatios);
+      } else {
+        tmpAmount = totalAmount - realTotalAmount;
+      }
+      realTotalAmount == tmpAmount + realTotalAmount;
       _attenders[addresses[i]] = Attender(addresses[i], ratios[i], tmpAmount, true);
       _addresses[i] = addresses[i];
     }
@@ -100,11 +110,6 @@ contract AirDrop is Context, Ownable {
     }
   }
 
-  function stopAirDrop() public claimActive {
-    _endContest = 0;
-    _claimActivated = false;
-    _withdrawRemaining();
-  }
   function _withdrawRemaining() private onlyOwner {
     uint256 totalRemaining = 0;
     for (uint256 i = 0; i < _addresses.length; i++) {
@@ -144,10 +149,11 @@ contract AirDrop is Context, Ownable {
     return _remainingAddresses;
   }
 
-  //to recieve ETH from uniswapV2Router when swaping
-  receive() external payable {}
-
-  function stopContest() public pure claimActive {
+  function stopAirDrop() public claimActive {
+    _endContest = 0;
     _claimActivated = false;
+    _withdrawRemaining();
   }
+
+  receive() external payable {}
 }
