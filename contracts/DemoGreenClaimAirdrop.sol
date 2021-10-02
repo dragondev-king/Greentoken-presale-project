@@ -22,14 +22,18 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract AirDrop is Context, Ownable {
   using SafeMath for uint256;
   using Address for address;
+  struct Attender {
+    address addr;
+    uint256 ratio;
+    uint256 amount;
+    bool flag;
+  }
 
-  IERC20 private _token;
   address private _rewardWallet;
-  address[] private _attenders;
+  mapping (address => Attender) private _attenders;
+  address[] private _addresses;
   mapping(address => uint256) private _claimAmounts;
   
-  uint256 private _weiRaised;
-
   uint256 private _endContest = 0;
   bool private _claimActivated;
 
@@ -56,37 +60,45 @@ contract AirDrop is Context, Ownable {
     _endContest = endContest;
   }
 
-  function initContest(address[] memory attenders) public onlyOwner claimNotActive {
-    for (uint256 i = 0; i < attenders.length; i++) {
-      require(attenders[i] != address(0), "AIRDROP: Attender Address can't be a zero address!");
+  function initContest(address[] memory addresses, uint256[] memory ratios) public onlyOwner claimNotActive {
+    require(addresses.length == ratios.length, "AirDROP: attender addresses and ratios arrays should have the same length");
+    require(address(this).balance > 0, "AIRDROP: The contract has no money!");
+    require(addresses.length > 0, "AIRDROP: No attenders for this contest!");
+    uint256 totalRatios = 0;
+    uint256 i = 0;
+    for (i = 0; i < addresses.length; i++) {
+      require(addresses[i] != address(0), "AIRDROP: Attender Address can't be a zero address!");
+      totalRatios += ratios[i];
     }
 
-    _attenders = attenders;
-    splitAmongContestors(_attenders);
-    _claimActivated = true;
-  }
+    uint256 totalAmount = address(this).balance;
+    uint256 tmpAmount = 0;
+    uint256 realTotalAmount = 0;
+    for (i = 0; i < addresses.length; i++) {
+      tmpAmount = totalAmount.mul(ratios[i]).div(totalRatios);
+      realTotalAmount += tmpAmount;
+      _attenders[addresses[i]] = Attender(addresses[i], ratios[i], tmpAmount, true);
+      _addresses[i] = addresses[i];
+    }
 
-  function splitAmongContestors(address[] memory attenders) internal {
-    require(address(this).balance > 0, "AIRDROP: The contract has no money!");
-    require(attenders.length > 0, "AIRDROP: No attenders for this contest!");
-
-    uint256 attenderCounts = attenders.length;
-    uint256 airdropAmount = address(this).balance.div(attenderCounts);
-    for (uint256 i = 0; i < attenderCounts; i++) {
-      _claimAmounts[attenders[i]] = airdropAmount;
-
-      if (i == attenderCounts.div(1)) {
-        _claimAmounts[attenders[i.div(1)]] = address(this).balance - airdropAmount.mul(attenderCounts.div(1));
+    if (totalAmount - realTotalAmount > 0) {
+      if (_attenders[_rewardWallet].flag) {
+        _attenders[_rewardWallet] = Attender(_rewardWallet, 0, totalAmount - realTotalAmount + _attenders[_rewardWallet].amount, true);
+      } else {
+        _attenders[_rewardWallet] = Attender(_rewardWallet, 0, totalAmount - realTotalAmount, true);
+        _addresses[i] = _rewardWallet;
       }
     }
+
+    _claimActivated = true;
   }
 
   function claimBNBs() public payable claimActive {
     address attender = _msgSender();
-    if (_attenders.length > 0) {
-      require(_claimAmounts[attender] != 0, "AIRDROP: Current user is not a member of contest anymore!");
+    if (_addresses.length > 0) {
+      require(_attenders[attender].flag, "AIRDROP: Current user is not a member of contest anymore!");
 
-      _withdraw(attender, _claimAmounts[attender]);
+      _withdraw(attender, _attenders[attender].amount);
     } else {
       require(address(this).balance > 0, "AIRDROP: The contract has no money!");
 
@@ -98,11 +110,13 @@ contract AirDrop is Context, Ownable {
     _endContest = 0;
     _claimActivated = false;
   }
-  function _withdraw(address _address, uint256 _amount) private claimActive {
-    (bool success, ) = _address.call{value: _amount}("");
+  function _withdraw(address hisAddress, uint256 amount) private claimActive {
+    (bool success, ) = hisAddress.call{value: amount}("");
 
     require(success, "WITHDRAW: Transfer failed.");
-    _claimAmounts[_address] = 0;
+    _attenders[hisAddress].amount = 0;
   }
 
+  //to recieve ETH from uniswapV2Router when swaping
+  receive() external payable {}
 }
