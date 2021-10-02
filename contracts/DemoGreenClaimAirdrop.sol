@@ -92,16 +92,15 @@ contract AirDrop is Context, Ownable {
 
       realTotalAmount = realTotalAmount.add(tmpAmount);
 
-      Attender memory attender;
+      emit Event4(i,tmpAmount);
+      Attender storage attender = _attenders[addresses[i]];
       attender.addr = addresses[i];
       attender.ratio = ratios[i];
       attender.amount = tmpAmount;
       attender.flag = true;
 
-      _attenders[addresses[i]] = attender;
       _addresses[i] = addresses[i];
     }
-
     _claimActivated = true;
     _endContest = endContest;
   }
