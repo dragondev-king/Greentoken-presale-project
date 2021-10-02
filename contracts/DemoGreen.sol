@@ -46,39 +46,6 @@ import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
 import "./OwnableE.sol";
 
 // DemoGreen Contract
-<<<<<<< HEAD
-contract DemoGreen is Context, IERC20, OwnableE {
-    using SafeMath for uint256;
-    using Address for address;
-
-    // Green & Clean Environment Reward Address
-    address payable public rewardAddress = payable(0x1b0155e319d0c77DA13A1644b1d200794c18Ec87);
-    // Contest Address
-    address payable public contestAddress = payable(0x4c4b60d86CFfBF2eFaF98C927359525c0406BA3F);
-    // Partnership and Licensing Agent Address
-    address payable public partnershipAddress = payable(0x3eD588aC5310e0D16bf98632Ea7a8b472B9CA6DC);
-    // Company Foundation
-    address payable public companyAddress = payable(0x178077A67422168f0Ba36fF73638B00AE86d083e);
-    // Airdrop Address
-    address payable public airdropAddress = payable(0xB5150f00795Ac7C887D00a19BE8F73b89025F983);
-    // Marketplace Address
-    address payable public marketplaceAddress = payable(0x399ABE01fA03Ec00417C05193D7bC6C22E64C51E);
-    // Burn Address
-    address public immutable deadAddress = 0x000000000000000000000000000000000000dEaD;
-
-    mapping (address => uint256) private _rOwned;
-    mapping (address => uint256) private _tOwned;
-    mapping (address => mapping (address => uint256)) private _allowances;
-
-    mapping (address => bool) private _isExcludedFromFee;
-    mapping (address => bool) private _isExcluded;
-    address[] private _excluded;
-
-    uint256 private constant MAX = ~uint256(0);
-    uint256 private _tTotal = 1 * 10**15 * 10**9;
-    uint256 private _rTotal = (MAX - (MAX % _tTotal));
-    uint256 private _tFeeTotal;
-=======
 contract DemoGreen is Context, IERC20, Ownable {
   using SafeMath for uint256;
   using Address for address;
@@ -110,7 +77,6 @@ contract DemoGreen is Context, IERC20, Ownable {
   uint256 private _tTotal = 1 * 10**15 * 10**9;
   uint256 private _rTotal = (MAX - (MAX % _tTotal));
   uint256 private _tFeeTotal;
->>>>>>> 5de066e (Update addresses)
 
     // Token Name & Token Symbol & Token Decimals
     string private _name = "DemoGreen";
