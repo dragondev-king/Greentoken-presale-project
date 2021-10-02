@@ -51,7 +51,11 @@ contract AirDrop is Context, Ownable {
     _;
   }
 
+<<<<<<< HEAD
   constructor (address wallet, uint256 endContest) {
+=======
+  constructor(address wallet) {
+>>>>>>> 5de066e (Update addresses)
     require(wallet != address(0), "AIRDROP: Wallet address can't be a zero address!");
     require(endContest > 0, "AIRDROP: End contest can't be zero");
 
@@ -117,6 +121,12 @@ contract AirDrop is Context, Ownable {
     _attenders[hisAddress].amount = 0;
   }
 
+<<<<<<< HEAD
   //to recieve ETH from uniswapV2Router when swaping
   receive() external payable {}
+=======
+  function stopContest() public pure claimActive {
+    _claimActivated = false;
+  }
+>>>>>>> 5de066e (Update addresses)
 }
