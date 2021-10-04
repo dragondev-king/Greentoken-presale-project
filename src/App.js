@@ -27,7 +27,6 @@ const App = () => {
         onConnectWalletHandler();
 
         const value = getContractWithSigner();
-        console.log(value);
         setAirDrop(value);
       }
     };
@@ -99,7 +98,7 @@ const App = () => {
     attenders.length
       ? attenders.map((data, index) => (
           <div key={index} className="app-attenders-item">
-            <span>{data.address}</span>:<span>{data.ratio}</span>
+            <span>{data.address}</span>(Ratio: <span>{data.ratio}</span>)
           </div>
         ))
       : "";
@@ -111,32 +110,24 @@ const App = () => {
     );
 
     try {
-      console.log(parseInt(process.env.REACT_APP_END_AIRDROP_AT));
-      console.log(addressArr);
-      console.log(ratioArr);
-      const result = await airDrop.initContest(
+      await airDrop.initContest(
         addressArr,
         ratioArr,
         parseInt(process.env.REACT_APP_END_AIRDROP_AT)
       );
-      console.log("result", result);
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   const claimBNBs = async () => {
-    const result = await airDrop.claimBNBs();
-    console.log("claim", result);
+    await airDrop.claimBNBs();
   };
 
   const stopAirDrop = async () => {
-    const result = await airDrop.stopAirDrop();
-    console.log("stop", result);
+    await airDrop.stopAirDrop();
   };
 
   return (
-    <div className="app flex flex-column">
+    <div className="app flex flex-column main-container">
       <div className="app-attenders">{generateTable()}</div>
       <div className="app-inputs">
         <input
@@ -144,19 +135,29 @@ const App = () => {
           name="address"
           type="text"
           onChange={onChangeHandler}
+          className="form-control"
         />
         <input
           value={ratio}
           name="ratio"
           type="number"
           onChange={onChangeHandler}
+          className="form-control"
         />
-        <button onClick={onAddHandler}>Add</button>
+        <button className="btn btn-primary" onClick={onAddHandler}>
+          Add
+        </button>
       </div>
       <div className="app-controllers">
-        <button onClick={startContest}>Start Contest</button>
-        <button onClick={stopAirDrop}>Stop Contest</button>
-        <button onClick={claimBNBs}>Claim</button>
+        <button className="btn btn-primary" onClick={startContest}>
+          Start Contest
+        </button>
+        <button className="btn btn-info" onClick={stopAirDrop}>
+          Stop Contest
+        </button>
+        <button className="btn btn-success" onClick={claimBNBs}>
+          Claim
+        </button>
       </div>
     </div>
   );
