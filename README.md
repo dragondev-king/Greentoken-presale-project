@@ -4,6 +4,11 @@ Token demo project for R&amp;D firm.
 
 # How to deploy Using Truffle
 
+## Install Node Modules
+```
+npm install // install dependencies
+```
+
 ## Filling .env up
 
 Please signup for infura.io and create an ethereum project. <br />
