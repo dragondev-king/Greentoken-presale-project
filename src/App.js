@@ -29,27 +29,6 @@ const App = () => {
         const value = getContractWithSigner();
         console.log(value);
         setAirDrop(value);
-        value.on(
-          "Event1(address[] addresses, uint256[] ratios)",
-          (param1, param2) => {
-            console.log("Event1", param1, param2);
-          }
-        );
-        value.on("Event2(uint256 totalRatios)", (param1) => {
-          console.log("Event1", param1);
-        });
-        value.on("Event3(uint256 totalAmount)", (param1) => {
-          console.log("Event1", param1);
-        });
-        value.on("Event4(uint256 i, uint256 tmpAmount)", (param1, param2) => {
-          console.log("Event1", param1, param2);
-        });
-        value.on("Event5(address[] _addresses)", (param1) => {
-          console.log("Event1", param1);
-        });
-        value.on("Event6(bool success)", (param1) => {
-          console.log("Event1", param1);
-        });
       }
     };
 
@@ -156,9 +135,6 @@ const App = () => {
     console.log("stop", result);
   };
 
-  const withDraw = async () => {
-    const result = await airDrop.withDraw();
-  };
   return (
     <div className="app flex flex-column">
       <div className="app-attenders">{generateTable()}</div>
@@ -181,7 +157,6 @@ const App = () => {
         <button onClick={startContest}>Start Contest</button>
         <button onClick={stopAirDrop}>Stop Contest</button>
         <button onClick={claimBNBs}>Claim</button>
-        <button onClick={withDraw}>WithDraw</button>
       </div>
     </div>
   );
