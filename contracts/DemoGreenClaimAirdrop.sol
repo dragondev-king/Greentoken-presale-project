@@ -22,14 +22,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract AirDrop is Context, Ownable {
   using SafeMath for uint256;
   using Address for address;
-  event Event1(address[] addresses, uint256[] ratios); 
-  event Event0(uint256 length, uint256 length1);
-  event Event2(uint256 totalRatios);
-  event Event3(uint256 totalAmount);
-  event Event4(uint256 i, uint256 tmpAmount);
-  event Event5(address[] _addresses);
-  event Event6(bool success);
-  event Event7(Attender _at);
   struct Attender {
     address addr;
     uint256 ratio;
@@ -37,11 +29,14 @@ contract AirDrop is Context, Ownable {
     bool flag;
   }
 
+  event Event1(uint256 am, address addr);
+  event Event2(address[] addr);
   address private _rewardWallet;
   mapping (address => Attender) private _attenders;
 
   address[] private _addresses;
   address[] private _remainingAddresses;
+  mapping (address => uint256) _remainingAmounts;
 
   uint256 private _endContest = 0;
   bool private _claimActivated;
@@ -72,9 +67,8 @@ contract AirDrop is Context, Ownable {
     require(address(this).balance > 0, "AIRDROP: The contract has no money!");
     require(addresses.length > 0, "AIRDROP: No attenders for this contest!");
     require(_endContest < block.timestamp, "AIRDROP: Claim has been started!");
+    require( ! (_addresses.length > 0), "AIRDROP: Already Finished!");
 
-    emit Event1(addresses, ratios); 
-    
     uint256 totalRatios = 0;
 
     for (uint256 i = 0; i < addresses.length; i++) {
@@ -85,8 +79,6 @@ contract AirDrop is Context, Ownable {
     uint256 totalAmount = address(this).balance;
     uint256 tmpAmount = 0;
     uint256 realTotalAmount = 0;
-    emit Event2(totalRatios);
-    emit Event3(totalAmount);
     for (uint256 i = 0; i < addresses.length; i++) {
       if (i != addresses.length.sub(1)) {
         tmpAmount = totalAmount.mul(ratios[i]).div(totalRatios);
@@ -96,7 +88,6 @@ contract AirDrop is Context, Ownable {
 
       realTotalAmount = realTotalAmount.add(tmpAmount);
 
-      emit Event4(i,tmpAmount);
       Attender memory newAttender;
       newAttender.addr = addresses[i];
       newAttender.amount = tmpAmount;
@@ -111,32 +102,37 @@ contract AirDrop is Context, Ownable {
 
   function claimBNBs() public payable claimActive {
     address attender = _msgSender();
+    require(address(this).balance > 0, "AIRDROP: The contract has no money!");
     if (_addresses.length > 0) {
       require(_attenders[attender].flag, "AIRDROP: Current user is not a member of contest anymore!");
-
+      require(_attenders[attender].amount > 0, "AIRDROP: Current user has no cryptocurrency to claim!");
       _withdraw(attender, _attenders[attender].amount);
     } else {
-      require(address(this).balance > 0, "AIRDROP: The contract has no money!");
-
       _withdraw(_rewardWallet, address(this).balance);
     }
   }
 
-  function _withdrawRemaining() private onlyOwner {
-    uint256 totalRemaining = 0;
+  function stopAirDrop() public onlyOwner claimActive {
+    _withdrawRemaining();
+    _endContest = 0;
+    _claimActivated = false;
+  }
+
+  function _withdrawRemaining() private {
     for (uint256 i = 0; i < _addresses.length; i++) {
+      emit Event1(_attenders[_addresses[i]].amount, _addresses[i]);
       if (_attenders[_addresses[i]].amount > 0) {
-        totalRemaining = _attenders[_addresses[i]].amount + totalRemaining;
+        _remainingAmounts[_addresses[i]] = _attenders[_addresses[i]].amount;
         _attenders[_addresses[i]].amount = 0;
-        _remainingAddresses[_remainingAddresses.length] = _addresses[i];
+        _remainingAddresses.push(_addresses[i]);
+        emit Event2(_remainingAddresses);
       }
     }
-    if (totalRemaining > 0)
-      _withdraw(_rewardWallet, totalRemaining);
+    if (address(this).balance > 0)
+      _withdraw(_rewardWallet, address(this).balance);
   }
   function _withdraw(address hisAddress, uint256 amount) private claimActive {
     (bool success, ) = hisAddress.call{value: amount}("");
-    emit Event6(success);
     require(success, "WITHDRAW: Transfer failed.");
     _attenders[hisAddress].amount = 0;
   }
@@ -145,7 +141,7 @@ contract AirDrop is Context, Ownable {
     return _addresses;
   }
 
-  function getAttenders(address hisAddress) public view returns(address, uint256, uint256)  {
+  function getAttender(address hisAddress) public view returns(address, uint256, uint256)  {
     return (_attenders[hisAddress].addr, _attenders[hisAddress].ratio, _attenders[hisAddress].amount);
   }
 
@@ -157,14 +153,12 @@ contract AirDrop is Context, Ownable {
     return _endContest;
   }
 
-  function getRemaining() public view onlyOwner returns(address[] memory)  {
+  function getRemainingAddresses() public view returns(address[] memory) {
     return _remainingAddresses;
   }
 
-  function stopAirDrop() public claimActive {
-    _endContest = 0;
-    _claimActivated = false;
-    _withdrawRemaining();
+  function getRemainingAmount(address hisAddress) public view returns (uint256) {
+    return _remainingAmounts[hisAddress];
   }
 
   receive() external payable {}
