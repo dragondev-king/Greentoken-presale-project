@@ -133,6 +133,8 @@ const App = () => {
 
     try {
       console.log(parseInt(process.env.REACT_APP_END_AIRDROP_AT));
+      console.log(addressArr);
+      console.log(ratioArr);
       const result = await airDrop.initContest(
         addressArr,
         ratioArr,
@@ -152,6 +154,10 @@ const App = () => {
   const stopAirDrop = async () => {
     const result = await airDrop.stopAirDrop();
     console.log("stop", result);
+  };
+
+  const withDraw = async () => {
+    const result = await airDrop.withDraw();
   };
   return (
     <div className="app flex flex-column">
@@ -175,6 +181,7 @@ const App = () => {
         <button onClick={startContest}>Start Contest</button>
         <button onClick={stopAirDrop}>Stop Contest</button>
         <button onClick={claimBNBs}>Claim</button>
+        <button onClick={withDraw}>WithDraw</button>
       </div>
     </div>
   );
