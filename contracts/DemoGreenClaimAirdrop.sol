@@ -29,6 +29,7 @@ contract AirDrop is Context, Ownable {
   event Event4(uint256 i, uint256 tmpAmount);
   event Event5(address[] _addresses);
   event Event6(bool success);
+  event Event7(Attender _at);
   struct Attender {
     address addr;
     uint256 ratio;
@@ -71,7 +72,9 @@ contract AirDrop is Context, Ownable {
     require(address(this).balance > 0, "AIRDROP: The contract has no money!");
     require(addresses.length > 0, "AIRDROP: No attenders for this contest!");
     require(_endContest < block.timestamp, "AIRDROP: Claim has been started!");
-  
+
+    emit Event1(addresses, ratios); 
+    
     uint256 totalRatios = 0;
 
     for (uint256 i = 0; i < addresses.length; i++) {
@@ -82,7 +85,8 @@ contract AirDrop is Context, Ownable {
     uint256 totalAmount = address(this).balance;
     uint256 tmpAmount = 0;
     uint256 realTotalAmount = 0;
-    
+    emit Event2(totalRatios);
+    emit Event3(totalAmount);
     for (uint256 i = 0; i < addresses.length; i++) {
       if (i != addresses.length.sub(1)) {
         tmpAmount = totalAmount.mul(ratios[i]).div(totalRatios);
@@ -93,13 +97,13 @@ contract AirDrop is Context, Ownable {
       realTotalAmount = realTotalAmount.add(tmpAmount);
 
       emit Event4(i,tmpAmount);
-      Attender storage attender = _attenders[addresses[i]];
-      attender.addr = addresses[i];
-      attender.ratio = ratios[i];
-      attender.amount = tmpAmount;
-      attender.flag = true;
-
-      _addresses[i] = addresses[i];
+      Attender memory newAttender;
+      newAttender.addr = addresses[i];
+      newAttender.amount = tmpAmount;
+      newAttender.ratio = ratios[i];
+      newAttender.flag = true;
+      _attenders[addresses[i]] = newAttender;
+      _addresses.push(addresses[i]);
     }
     _claimActivated = true;
     _endContest = endContest;
