@@ -7,7 +7,7 @@ module.exports = async function (deployer) {
   deployer.deploy(
     DemoGreenPresale,
     parseInt(process.env.PRESALE_RATE),
-    process.env.PRESALE_WALLET_ADDRESS,
+    process.env.REWARD_WALLET_ADDRESS,
     demo_green.address
   );
 };

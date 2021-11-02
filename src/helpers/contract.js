@@ -9,7 +9,7 @@ export const getContractWithSigner = () => {
 
   const signer = infuraProvider.getSigner();
   const contract = new ethers.Contract(
-    process.env.REACT_APP_AIRDROP_ADDRESS,
+    contractABI["networks"]["" + parseInt(process.env.REACT_APP_CHAIN_ID)]['address'],
     contractABI.abi,
     signer
   );
@@ -22,7 +22,7 @@ const getContractWithoutSigner = () => {
   const infuraProvider = new ethers.providers.Web3Provider(window.ethereum);
 
   const contract = new ethers.Contract(
-    process.env.REACT_APP_AIRDROP_ADDRESS,
+    contractABI["networks"]["" + parseInt(process.env.REACT_APP_CHAIN_ID)]['address'],
     contractABI.abi,
     infuraProvider
   );
